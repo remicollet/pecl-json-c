@@ -16,6 +16,7 @@ echo "\nInteger:      ".json_encode(123);
 echo "\nAscii String: ".json_encode("foo");
 echo "\nUTF-8 String: ".json_encode("réunion");
 echo "\nArray1: ".json_encode(array(2,4,6));
+echo "\nArray1: ".json_encode(array(2,NULL,6));
 echo "\nArray2: ".json_encode(array(2,4,6), JSON_FORCE_OBJECT);
 echo "\nObject: ".json_encode(new Mini("foo"));
 echo "\nDone\n";

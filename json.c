@@ -247,8 +247,7 @@ struct json_object* json_encode_array(zval **val, int options TSRMLS_DC) /* {{{ 
 				if (r == PHP_JSON_OUTPUT_ARRAY) {
 				    tmp = json_c_encode(*data, options TSRMLS_CC);
 				    if (tmp) {
-					    /* TODO how to add NULL ? */
-    					json_object_array_add(pjo, tmp);
+                        json_object_array_put_idx(pjo, index, tmp);
 					}
 
 				} else if (r == PHP_JSON_OUTPUT_OBJECT) {
