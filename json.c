@@ -156,7 +156,139 @@ static PHP_MINFO_FUNCTION(json)
 }
 /* }}} */
 
-struct json_object* jsonc_c_encode(zval *val, int options TSRMLS_DC) {
+static int json_determine_array_type(zval **val TSRMLS_DC) /* {{{ */
+{
+	int i;
+	HashTable *myht = HASH_OF(*val);
+
+	i = myht ? zend_hash_num_elements(myht) : 0;
+	if (i > 0) {
+		char *key;
+		ulong index, idx;
+		uint key_len;
+		HashPosition pos;
+
+		zend_hash_internal_pointer_reset_ex(myht, &pos);
+		idx = 0;
+		for (;; zend_hash_move_forward_ex(myht, &pos)) {
+			i = zend_hash_get_current_key_ex(myht, &key, &key_len, &index, 0, &pos);
+			if (i == HASH_KEY_NON_EXISTANT) {
+				break;
+			}
+
+			if (i == HASH_KEY_IS_STRING) {
+				return PHP_JSON_OUTPUT_OBJECT;
+			} else {
+				if (index != idx) {
+					return PHP_JSON_OUTPUT_OBJECT;
+				}
+			}
+			idx++;
+		}
+	}
+
+	return PHP_JSON_OUTPUT_ARRAY;
+}
+/* }}} */
+
+struct json_object * json_c_encode(zval *val, int options TSRMLS_DC);
+
+struct json_object* json_encode_array(zval **val, int options TSRMLS_DC) /* {{{ */
+{
+	int i, r;
+	HashTable *myht;
+	struct json_object *pjo, *tmp;
+
+	if (Z_TYPE_PP(val) == IS_ARRAY) {
+		myht = HASH_OF(*val);
+		r = (options & PHP_JSON_FORCE_OBJECT) ? PHP_JSON_OUTPUT_OBJECT : json_determine_array_type(val TSRMLS_CC);
+	} else {
+		myht = Z_OBJPROP_PP(val);
+		r = PHP_JSON_OUTPUT_OBJECT;
+	}
+
+	if (myht && myht->nApplyCount > 1) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "recursion detected");
+		return NULL;
+	}
+
+	if (r == PHP_JSON_OUTPUT_ARRAY) {
+	    pjo = json_object_new_array();
+	} else {
+	    pjo = json_object_new_object();
+	}
+
+	++JSON_G(encoder_depth);
+
+	i = myht ? zend_hash_num_elements(myht) : 0;
+
+	if (i > 0)
+	{
+		char *key;
+		zval **data;
+		ulong index;
+		uint key_len;
+		HashPosition pos;
+		HashTable *tmp_ht;
+		int need_comma = 0;
+
+		zend_hash_internal_pointer_reset_ex(myht, &pos);
+		for (;; zend_hash_move_forward_ex(myht, &pos)) {
+			i = zend_hash_get_current_key_ex(myht, &key, &key_len, &index, 0, &pos);
+			if (i == HASH_KEY_NON_EXISTANT)
+				break;
+
+			if (zend_hash_get_current_data_ex(myht, (void **) &data, &pos) == SUCCESS) {
+				tmp_ht = HASH_OF(*data);
+				if (tmp_ht) {
+					tmp_ht->nApplyCount++;
+				}
+
+				if (r == PHP_JSON_OUTPUT_ARRAY) {
+				    tmp = json_c_encode(*data, options TSRMLS_CC);
+				    if (tmp) {
+					    /* TODO how to add NULL ? */
+    					json_object_array_add(pjo, tmp);
+					}
+
+				} else if (r == PHP_JSON_OUTPUT_OBJECT) {
+				    char *real_key;
+
+					if (i == HASH_KEY_IS_STRING) {
+						if (key[0] == '\0' && Z_TYPE_PP(val) == IS_OBJECT) {
+							/* Skip protected and private members. */
+							if (tmp_ht) {
+								tmp_ht->nApplyCount--;
+							}
+							continue;
+						}
+                        spprintf(&real_key, 0, "%.*s", key_len, key);
+					} else {
+                        spprintf(&real_key, 0, "%ld", (long) index);
+					}
+
+                    tmp = json_c_encode(*data, options TSRMLS_CC);
+					if (tmp) {
+					    /* TODO how to add NULL ? */
+					    json_object_object_add(pjo, real_key, tmp);
+					}
+					efree(real_key);
+				}
+
+				if (tmp_ht) {
+					tmp_ht->nApplyCount--;
+				}
+			}
+		}
+	}
+
+	--JSON_G(encoder_depth);
+	return pjo;
+}
+/* }}} */
+
+struct json_object * json_c_encode(zval *val, int options TSRMLS_DC)  /* {{{ */
+{
 
 	switch (Z_TYPE_P(val))
 	{
@@ -179,17 +311,28 @@ struct json_object* jsonc_c_encode(zval *val, int options TSRMLS_DC) {
 		case IS_STRING:
 			return json_object_new_string_len(Z_STRVAL_P(val), Z_STRLEN_P(val));
 			break;
+
+		case IS_OBJECT:
+/*			if (instanceof_function(Z_OBJCE_P(val), php_json_serializable_ce TSRMLS_CC)) {
+				json_encode_serializable_object(buf, val, options TSRMLS_CC);
+				break;
+			}
+*/			/* fallthrough -- Non-serializable object */
+		case IS_ARRAY:
+			return json_encode_array(&val, options TSRMLS_CC);
+			break;
 	}
 	php_error_docref(NULL TSRMLS_CC, E_WARNING, "type is unsupported, encoded as null");
 	return NULL;
 }
+/* }}} */
 
 PHP_JSON_API void php_json_encode(smart_str *buf, zval *val, int options TSRMLS_DC) /* {{{ */
 {
     struct json_object* pjo;
     const char *str;
     
-    pjo = jsonc_c_encode(val, options TSRMLS_CC);
+    pjo = json_c_encode(val, options TSRMLS_CC);
     str = json_object_to_json_string(pjo);
     smart_str_appends(buf, str);
     
