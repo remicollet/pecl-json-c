@@ -267,10 +267,7 @@ struct json_object* json_encode_array(zval **val, int options TSRMLS_DC) /* {{{ 
 					}
 
                     tmp = json_c_encode(*data, options TSRMLS_CC);
-					if (tmp) {
-					    /* TODO how to add NULL ? */
-					    json_object_object_add(pjo, real_key, tmp);
-					}
+				    json_object_object_add(pjo, real_key, tmp);
 					efree(real_key);
 				}
 
