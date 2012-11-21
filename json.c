@@ -191,9 +191,9 @@ static int json_determine_array_type(zval **val TSRMLS_DC) /* {{{ */
 }
 /* }}} */
 
-struct json_object * json_c_encode(zval *val, int options TSRMLS_DC);
+static struct json_object * json_c_encode(zval *val, int options TSRMLS_DC);
 
-struct json_object* json_encode_array(zval **val, int options TSRMLS_DC) /* {{{ */
+static struct json_object* json_encode_array(zval **val, int options TSRMLS_DC) /* {{{ */
 {
 	int i, r;
 	HashTable *myht;
@@ -283,7 +283,52 @@ struct json_object* json_encode_array(zval **val, int options TSRMLS_DC) /* {{{ 
 }
 /* }}} */
 
-struct json_object * json_c_encode(zval *val, int options TSRMLS_DC)  /* {{{ */
+static struct json_object *json_encode_serializable_object(zval *val, int options TSRMLS_DC) /* {{{ */
+{
+	zend_class_entry *ce = Z_OBJCE_P(val);
+	zval *retval = NULL, fname;
+	HashTable* myht;
+	struct json_object *pjo;
+
+	if (Z_TYPE_P(val) == IS_ARRAY) {
+		myht = HASH_OF(val);
+	} else {
+		myht = Z_OBJPROP_P(val);
+	}
+
+	if (myht && myht->nApplyCount > 1) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "recursion detected");
+		return NULL;
+	}
+
+	ZVAL_STRING(&fname, "jsonSerialize", 0);
+
+	if (FAILURE == call_user_function_ex(EG(function_table), &val, &fname, &retval, 0, NULL, 1, NULL TSRMLS_CC) || !retval) {
+		zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Failed calling %s::jsonSerialize()", ce->name);
+		return NULL;
+    }
+
+	if (EG(exception)) {
+		/* Error already raised */
+		zval_ptr_dtor(&retval);
+		return NULL;
+	}
+
+	if ((Z_TYPE_P(retval) == IS_OBJECT) &&
+		(Z_OBJ_HANDLE_P(retval) == Z_OBJ_HANDLE_P(val))) {
+		/* Handle the case where jsonSerialize does: return $this; by going straight to encode array */
+		pjo = json_encode_array(&retval, options TSRMLS_CC);
+	} else {
+		/* All other types, encode as normal */
+		pjo = json_c_encode(retval, options TSRMLS_CC);
+	}
+
+	zval_ptr_dtor(&retval);
+	return pjo;
+}
+/* }}} */
+
+static struct json_object * json_c_encode(zval *val, int options TSRMLS_DC)  /* {{{ */
 {
 
 	switch (Z_TYPE_P(val))
@@ -309,11 +354,11 @@ struct json_object * json_c_encode(zval *val, int options TSRMLS_DC)  /* {{{ */
 			break;
 
 		case IS_OBJECT:
-/*			if (instanceof_function(Z_OBJCE_P(val), php_json_serializable_ce TSRMLS_CC)) {
-				json_encode_serializable_object(buf, val, options TSRMLS_CC);
+			if (instanceof_function(Z_OBJCE_P(val), php_json_serializable_ce TSRMLS_CC)) {
+				return json_encode_serializable_object(val, options TSRMLS_CC);
 				break;
 			}
-*/			/* fallthrough -- Non-serializable object */
+			/* fallthrough -- Non-serializable object */
 		case IS_ARRAY:
 			return json_encode_array(&val, options TSRMLS_CC);
 			break;

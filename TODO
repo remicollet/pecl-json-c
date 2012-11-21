@@ -1,7 +1,6 @@
 TODO
 ====
 - pretty output
-- jsonSerialize
 - json_decode
 - string escape
 - UTF-8
