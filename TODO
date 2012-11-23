@@ -1,3 +1,8 @@
+DONE
+====
+- json_encode
+  https://bugs.php.net/bug.php?id=63588
+
 TODO
 ====
 - json_decode

@@ -1,5 +1,5 @@
 
-PHP  Version: 5.4.9RC1
+PHP  Version: 5.4.9
 Json Version: 1.2.1
 
 NULL:         null
@@ -20,7 +20,7 @@ Object Ser 1: {"One":"foo","Two":"bar"}
 Object Ser 2: {"prop1":"foo","prop2":"bar"}
 Done
 
-PHP  Version: 5.4.9RC1
+PHP  Version: 5.4.9
 Json Version: 2.0.0-dev
 
 NULL:         null
@@ -31,12 +31,12 @@ Ascii String: "foo"
 String 1:     "x'x"
 String 2:     "y\"y"
 Ascii String: "foo"
-UTF-8 String: "réunion"
-Array1:       [ 2, 4, 6 ]
-Array2:       [ 2, null, 6 ]
-Array as Obj: { "0": 2, "1": 4, "2": 6 }
-Object1:      { "prop1": "foo", "prop2": "bar" }
-Object2:      { "prop1": "foo", "prop2": null }
-Object Ser 1: { "One": "foo", "Two": "bar" }
-Object Ser 2: { "prop1": "foo", "prop2": "bar" }
+UTF-8 String: "r\u00e9union"
+Array1:       [2,4,6]
+Array2:       [2,null,6]
+Array as Obj: {"0":2,"1":4,"2":6}
+Object1:      {"prop1":"foo","prop2":"bar"}
+Object2:      {"prop1":"foo","prop2":null}
+Object Ser 1: {"One":"foo","Two":"bar"}
+Object Ser 2: {"prop1":"foo","prop2":"bar"}
 Done

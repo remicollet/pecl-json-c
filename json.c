@@ -345,6 +345,7 @@ static void json_encode_array(smart_str *buf, zval **val, int options TSRMLS_DC)
 }
 /* }}} */
 
+
 static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len) /* {{{ */
 {
 	size_t pos = 0, us;
@@ -356,6 +357,7 @@ static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len) /* {{
 			return -1;
 		}
 		if (utf16) {
+			/* From http://en.wikipedia.org/wiki/UTF16 */
 			if (us >= 0x10000) {
 				us -= 0x10000;
 				utf16[j++] = (unsigned short)((us >> 10) | 0xd800);
@@ -369,8 +371,6 @@ static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len) /* {{
 }
 /* }}} */
 
-
-#define REVERSE16(us) (((us & 0xf) << 12) | (((us >> 4) & 0xf) << 8) | (((us >> 8) & 0xf) << 4) | ((us >> 12) & 0xf))
 
 static void json_escape_string(smart_str *buf, char *s, int len, int options TSRMLS_DC) /* {{{ */
 {
@@ -516,15 +516,10 @@ static void json_escape_string(smart_str *buf, char *s, int len, int options TSR
 					smart_str_appendc(buf, (unsigned char) us);
 				} else {
 					smart_str_appendl(buf, "\\u", 2);
-					us = REVERSE16(us);
-
-					smart_str_appendc(buf, digits[us & ((1 << 4) - 1)]);
-					us >>= 4;
-					smart_str_appendc(buf, digits[us & ((1 << 4) - 1)]);
-					us >>= 4;
-					smart_str_appendc(buf, digits[us & ((1 << 4) - 1)]);
-					us >>= 4;
-					smart_str_appendc(buf, digits[us & ((1 << 4) - 1)]);
+					smart_str_appendc(buf, digits[(us & 0xf000) >> 12]);
+					smart_str_appendc(buf, digits[(us & 0xf00)  >> 8]);
+					smart_str_appendc(buf, digits[(us & 0xf0)   >> 4]);
+					smart_str_appendc(buf, digits[(us & 0xf)]);
 				}
 				break;
 		}

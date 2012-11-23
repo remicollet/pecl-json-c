@@ -1,14 +1,14 @@
-
-PHP  Version: 5.4.9RC1
+PHP  Version: 5.4.9
 Json Version: 1.2.1
 
 Count: 131449
-Encode in 0.00787 sec, 519483 bytes
-Decode in 0.03531 sec
+Encode in 0.00840 sec, 519483 bytes
+Decode in 0.03291 sec
 
-PHP  Version: 5.4.9RC1
+PHP  Version: 5.4.9
 Json Version: 2.0.0-dev
 
 Count: 131358
-Encode in 0.03861 sec, 650014 bytes
+Encode in 0.00785 sec, 518655 bytes
 Decode not inplemented
+
