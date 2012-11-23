@@ -345,13 +345,38 @@ static void json_encode_array(smart_str *buf, zval **val, int options TSRMLS_DC)
 }
 /* }}} */
 
+static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len) /* {{{ */
+{
+	size_t pos = 0, us;
+	int j, status;
+
+	for (j=0 ; pos < len ; j++) {
+		us = php_next_utf8_char((const unsigned char *)utf8, len, &pos, &status);
+		if (status != SUCCESS) {
+			return -1;
+		}
+		if (utf16) {
+			if (us >= 0x10000) {
+				us -= 0x10000;
+				utf16[j++] = (unsigned short)((us >> 10) | 0xd800);
+				utf16[j] = (unsigned short)((us & 0x3ff) | 0xdc00);
+			} else {
+				utf16[j] = (unsigned short)us;
+			}
+		}
+	}
+	return j;
+}
+/* }}} */
+
+
 #define REVERSE16(us) (((us & 0xf) << 12) | (((us >> 4) & 0xf) << 8) | (((us >> 8) & 0xf) << 4) | ((us >> 12) & 0xf))
 
 static void json_escape_string(smart_str *buf, char *s, int len, int options TSRMLS_DC) /* {{{ */
 {
-	int status;
-	size_t pos;
+	int pos = 0, ulen = 0;
 	unsigned short us;
+	unsigned short *utf16;
 	size_t newlen;
 
 	if (len == 0) {
@@ -383,20 +408,34 @@ static void json_escape_string(smart_str *buf, char *s, int len, int options TSR
 
 	}
 
+	utf16 = (options & PHP_JSON_UNESCAPED_UNICODE) ? NULL : (unsigned short *) safe_emalloc(len, sizeof(unsigned short), 0);
+	ulen = json_utf8_to_utf16(utf16, s, len);
+	if (ulen <= 0) {
+		if (utf16) {
+			efree(utf16);
+		}
+		if (ulen < 0) {
+			JSON_G(error_code) = PHP_JSON_ERROR_UTF8;
+			if (!PG(display_errors)) {
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid UTF-8 sequence in argument");
+			}
+			smart_str_appendl(buf, "null", 4);
+		} else {
+			smart_str_appendl(buf, "\"\"", 2);
+		}
+		return;
+	}
+	if (!(options & PHP_JSON_UNESCAPED_UNICODE)) {
+		len = ulen;
+	}
+
 	/* pre-allocate for string length plus 2 quotes */
 	smart_str_alloc(buf, len+2, 0);
 	smart_str_appendc(buf, '"');
 
 	while (pos < len)
 	{
-		if (options & PHP_JSON_UNESCAPED_UNICODE) {
-		    us = s[pos++];
-	    } else {
-	        us = php_next_utf8_char((const unsigned char *)s, len, &pos, &status);
-	        if (status != SUCCESS) {
-				php_error_docref(NULL TSRMLS_CC, E_WARNING, "Invalid UTF-8 sequence in argument");
-	        }
-        }
+		us = (options & PHP_JSON_UNESCAPED_UNICODE) ? s[pos++] : utf16[pos++];
 
 		switch (us)
 		{
@@ -492,6 +531,9 @@ static void json_escape_string(smart_str *buf, char *s, int len, int options TSR
 	}
 
 	smart_str_appendc(buf, '"');
+	if (utf16) {
+		efree(utf16);
+	}
 }
 /* }}} */
 
