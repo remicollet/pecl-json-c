@@ -34,6 +34,7 @@ echo "\nAscii String: ".json_encode("foo");
 echo "\nUTF-8 String: ".json_encode("réunion");
 echo "\nArray1:       ".json_encode(array(2,4,6));
 echo "\nArray2:       ".json_encode(array(2,NULL,6));
+echo "\nArray3:       ".json_encode(array());
 echo "\nArray as Obj: ".json_encode(array(2,4,6), JSON_FORCE_OBJECT);
 echo "\nObject1:      ".json_encode(new Mini("foo", "bar"));
 echo "\nObject2:      ".json_encode(new Mini("foo", NULL));
@@ -52,6 +53,7 @@ echo "string 3:     "; var_dump(json_decode('"x\'x"'));
 echo "string 4:     "; var_dump(json_decode('"y\"y"'));
 echo "array 1:      "; var_dump(json_decode('[2,4,6]'));
 echo "array 2:      "; var_dump(json_decode('[2,null,6]'));
+echo "array 3:      "; var_dump(json_decode('[]'));
 
 echo "\nDone\n";
 
