@@ -678,7 +678,7 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value) /* {{
                 array_init(return_value);
                 nb = json_object_array_length(new_obj);
                 for (i=0 ; i<nb ; i++) {
-                     ALLOC_INIT_ZVAL(tmpval);
+                     MAKE_STD_ZVAL(tmpval);
                      json_object_to_zval(json_object_array_get_idx(new_obj, i), tmpval);
                      add_next_index_zval(return_value, tmpval);
                 }
@@ -692,7 +692,6 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value) /* {{
 }
 
 /* }}} */
-#define json_tokener_get_error(tok) (tok->err)
 
 PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len, int options, long depth TSRMLS_DC) /* {{{ */
 {

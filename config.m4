@@ -23,11 +23,11 @@ if test "$PHP_JSON" != "no"; then
       AC_MSG_RESULT($LIBJSON_VERSION)
   fi
 
-    PHP_CHECK_LIBRARY(json, json_object_get, 
+    PHP_CHECK_LIBRARY(json, json_tokener_get_error,
     [
       AC_DEFINE([HAVE_JSON], 1 ,[whether to enable JavaScript Object Serialization support])
     ],[
-      AC_MSG_ERROR([Sorry, I was not able to diagnose which libjson version you have installed.])
+      AC_MSG_ERROR([Sorry, I was not able to diagnose which libjson version you have installed (requires >= 0.10).])
     ],[
       -L$LIBJSON_LIBDIR
     ])
