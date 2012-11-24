@@ -29,6 +29,7 @@
 #include "ext/standard/html.h"
 #include "ext/standard/php_smart_str.h"
 #include "php_json.h"
+#include "json/json.h"
 #include <zend_exceptions.h>
 
 static PHP_MINFO_FUNCTION(json);
@@ -640,9 +641,61 @@ PHP_JSON_API void php_json_encode(smart_str *buf, zval *val, int options TSRMLS_
 }
 /* }}} */
 
+#define json_tokener_get_error(tok) (tok->err)
+
 PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len, int options, long depth TSRMLS_DC) /* {{{ */
 {
-	RETURN_NULL();
+	json_tokener *tok;    
+	json_object  *new_obj;
+    json_type     type;
+
+	RETVAL_NULL();
+
+	tok = json_tokener_new();
+	new_obj = json_tokener_parse_ex(tok, str, str_len);
+	if (json_tokener_get_error(tok)==json_tokener_continue) {
+    	new_obj = json_tokener_parse_ex(tok, "", -1);
+	}
+    if (new_obj) {
+        type = json_object_get_type(new_obj);
+        switch (type) {
+            case json_type_double:
+                RETVAL_DOUBLE(json_object_get_double(new_obj));
+                break;
+
+            case json_type_int:
+                RETVAL_LONG(json_object_get_int(new_obj));
+                break;
+
+            case json_type_boolean:
+                if (json_object_get_boolean(new_obj)) {
+                    RETVAL_BOOL(1);
+                } else {
+                    RETVAL_BOOL(0);
+                }
+                break;
+
+            default:
+    			php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
+        }        
+        json_object_put(new_obj);
+    } else {
+        if (json_tokener_get_error(tok)) {
+    		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Parser error '%d'", json_tokener_get_error(tok));
+		}
+        switch (json_tokener_get_error(tok)) {
+            case json_tokener_success:
+                break;
+
+            case json_tokener_error_depth:
+                JSON_G(error_code) = PHP_JSON_ERROR_DEPTH;
+                break;
+
+            default:
+                JSON_G(error_code) = PHP_JSON_ERROR_SYNTAX;
+        }
+    }
+	json_tokener_free(tok);
 }
 /* }}} */
 

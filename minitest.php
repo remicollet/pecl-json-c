@@ -22,6 +22,7 @@ class MiniSer2 extends Mini implements JsonSerializable {
 echo "\nPHP  Version: ".phpversion()."\n";
 echo "Json Version: ".phpversion('json')."\n";
 
+echo "\nEncode\n";
 echo "\nNULL:         ".json_encode(NULL);
 echo "\nTrue:         ".json_encode(true);
 echo "\nFalse:        ".json_encode(false);
@@ -38,5 +39,13 @@ echo "\nObject1:      ".json_encode(new Mini("foo", "bar"));
 echo "\nObject2:      ".json_encode(new Mini("foo", NULL));
 echo "\nObject Ser 1: ".json_encode(new MiniSer1("foo", "bar"));
 echo "\nObject Ser 2: ".json_encode(new MiniSer2("foo", "bar"));
+
+echo "\nDecode\n";
+echo "null:         "; var_dump(json_decode("null"));
+echo "123:          "; var_dump(json_decode("123"));
+echo "3.14:         "; var_dump(json_decode("3.14"));
+echo "true:         "; var_dump(json_decode("true"));
+echo "false:        "; var_dump(json_decode("false"));
+
 echo "\nDone\n";
 
