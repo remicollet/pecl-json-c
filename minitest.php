@@ -46,6 +46,10 @@ echo "123:          "; var_dump(json_decode("123"));
 echo "3.14:         "; var_dump(json_decode("3.14"));
 echo "true:         "; var_dump(json_decode("true"));
 echo "false:        "; var_dump(json_decode("false"));
+echo "string 1:     "; var_dump(json_decode('"foo"'));
+echo "string 2:     "; var_dump(json_decode('"r\u00e9union"'));
+echo "string 3:     "; var_dump(json_decode('"x\'x"'));
+echo "string 4:     "; var_dump(json_decode('"y\"y"'));
 
 echo "\nDone\n";
 

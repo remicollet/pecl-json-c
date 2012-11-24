@@ -663,6 +663,10 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
                 RETVAL_DOUBLE(json_object_get_double(new_obj));
                 break;
 
+            case json_type_string:
+                RETVAL_STRING(json_object_get_string(new_obj), 1);
+                break;
+
             case json_type_int:
                 RETVAL_LONG(json_object_get_int(new_obj));
                 break;
@@ -675,14 +679,20 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
                 }
                 break;
 
+            case json_type_null:
+                break;
+
+            case json_type_object:
+            case json_type_array:
             default:
     			php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
         }        
         json_object_put(new_obj);
     } else {
         if (json_tokener_get_error(tok)) {
-    		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Parser error '%d'", json_tokener_get_error(tok));
-		}
+            php_error_docref(NULL TSRMLS_CC, E_WARNING, "Parser error '%d'", json_tokener_get_error(tok));
+        }
+
         switch (json_tokener_get_error(tok)) {
             case json_tokener_success:
                 break;
