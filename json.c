@@ -641,22 +641,14 @@ PHP_JSON_API void php_json_encode(smart_str *buf, zval *val, int options TSRMLS_
 }
 /* }}} */
 
-#define json_tokener_get_error(tok) (tok->err)
-
-PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len, int options, long depth TSRMLS_DC) /* {{{ */
+static void json_object_to_zval(json_object  *new_obj, zval *return_value) /* {{{ */
 {
-	json_tokener *tok;    
-	json_object  *new_obj;
     json_type     type;
+    zval         *tmpval;
+    int          i, nb;
 
 	RETVAL_NULL();
-
-	tok = json_tokener_new();
-	new_obj = json_tokener_parse_ex(tok, str, str_len);
-	if (json_tokener_get_error(tok)==json_tokener_continue) {
-    	new_obj = json_tokener_parse_ex(tok, "", -1);
-	}
-    if (new_obj) {
+	if (new_obj) {
         type = json_object_get_type(new_obj);
         switch (type) {
             case json_type_double:
@@ -682,11 +674,41 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
             case json_type_null:
                 break;
 
-            case json_type_object:
             case json_type_array:
+                array_init(return_value);
+                nb = json_object_array_length(new_obj);
+                for (i=0 ; i<nb ; i++) {
+                     ALLOC_INIT_ZVAL(tmpval);
+                     json_object_to_zval(json_object_array_get_idx(new_obj, i), tmpval);
+                     add_next_index_zval(return_value, tmpval);
+                }
+                break;
+
+            case json_type_object:
             default:
-    			php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
+			    php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
         }        
+    }
+}
+
+/* }}} */
+#define json_tokener_get_error(tok) (tok->err)
+
+PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len, int options, long depth TSRMLS_DC) /* {{{ */
+{
+	json_tokener *tok;
+	json_object  *new_obj;
+
+	RETVAL_NULL();
+
+	tok = json_tokener_new();
+	new_obj = json_tokener_parse_ex(tok, str, str_len);
+	if (json_tokener_get_error(tok)==json_tokener_continue) {
+		new_obj = json_tokener_parse_ex(tok, "", -1);
+	}
+
+    if (new_obj) {
+        json_object_to_zval(new_obj, return_value);
         json_object_put(new_obj);
     } else {
         if (json_tokener_get_error(tok)) {

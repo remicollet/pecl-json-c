@@ -50,6 +50,8 @@ echo "string 1:     "; var_dump(json_decode('"foo"'));
 echo "string 2:     "; var_dump(json_decode('"r\u00e9union"'));
 echo "string 3:     "; var_dump(json_decode('"x\'x"'));
 echo "string 4:     "; var_dump(json_decode('"y\"y"'));
+echo "array 1:      "; var_dump(json_decode('[2,4,6]'));
+echo "array 2:      "; var_dump(json_decode('[2,null,6]'));
 
 echo "\nDone\n";
 
