@@ -641,11 +641,14 @@ PHP_JSON_API void php_json_encode(smart_str *buf, zval *val, int options TSRMLS_
 }
 /* }}} */
 
-static void json_object_to_zval(json_object  *new_obj, zval *return_value) /* {{{ */
+static void json_object_to_zval(json_object  *new_obj, zval *return_value, int options TSRMLS_DC) /* {{{ */
 {
+    struct json_object_iterator it, itEnd;
+    json_object  *tmpobj;
     json_type     type;
     zval         *tmpval;
-    int          i, nb;
+    int           i, nb;
+    const char   *key;
 
 	RETVAL_NULL();
 	if (new_obj) {
@@ -679,12 +682,28 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value) /* {{
                 nb = json_object_array_length(new_obj);
                 for (i=0 ; i<nb ; i++) {
                      MAKE_STD_ZVAL(tmpval);
-                     json_object_to_zval(json_object_array_get_idx(new_obj, i), tmpval);
+                     json_object_to_zval(json_object_array_get_idx(new_obj, i), tmpval, options TSRMLS_CC);
                      add_next_index_zval(return_value, tmpval);
                 }
                 break;
 
             case json_type_object:
+                if (options & PHP_JSON_OBJECT_AS_ARRAY) {
+                    array_init(return_value);
+                    it = json_object_iter_begin(new_obj);
+                    itEnd = json_object_iter_end(new_obj);
+
+                    while (!json_object_iter_equal(&it, &itEnd)) {
+                        MAKE_STD_ZVAL(tmpval);
+                        key = json_object_iter_peek_name(&it);
+                        tmpobj  = json_object_iter_peek_value(&it);
+                        json_object_to_zval(tmpobj, tmpval, options TSRMLS_CC);
+                        add_assoc_zval(return_value, key, tmpval);
+                        json_object_iter_next(&it);
+                    }
+                    break;
+                }
+
             default:
 			    php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
         }        
@@ -707,7 +726,7 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 	}
 
     if (new_obj) {
-        json_object_to_zval(new_obj, return_value);
+        json_object_to_zval(new_obj, return_value, options TSRMLS_CC);
         json_object_put(new_obj);
     } else {
         if (json_tokener_get_error(tok)) {

@@ -54,6 +54,6 @@ echo "string 4:     "; var_dump(json_decode('"y\"y"'));
 echo "array 1:      "; var_dump(json_decode('[2,4,6]'));
 echo "array 2:      "; var_dump(json_decode('[2,null,6]'));
 echo "array 3:      "; var_dump(json_decode('[]'));
-
+echo "Obj as array: "; var_dump(json_decode('{"One":"foo","Two":"bar"}', true));
 echo "\nDone\n";
 
