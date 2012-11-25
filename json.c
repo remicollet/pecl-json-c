@@ -690,19 +690,29 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
             case json_type_object:
                 if (options & PHP_JSON_OBJECT_AS_ARRAY) {
                     array_init(return_value);
-                    it = json_object_iter_begin(new_obj);
-                    itEnd = json_object_iter_end(new_obj);
-
-                    while (!json_object_iter_equal(&it, &itEnd)) {
-                        MAKE_STD_ZVAL(tmpval);
-                        key = json_object_iter_peek_name(&it);
-                        tmpobj  = json_object_iter_peek_value(&it);
-                        json_object_to_zval(tmpobj, tmpval, options TSRMLS_CC);
-                        add_assoc_zval(return_value, key, tmpval);
-                        json_object_iter_next(&it);
-                    }
-                    break;
+                } else { /* OBJECT */
+                    object_init(return_value);
                 }
+                it = json_object_iter_begin(new_obj);
+                itEnd = json_object_iter_end(new_obj);
+
+                while (!json_object_iter_equal(&it, &itEnd)) {
+                    MAKE_STD_ZVAL(tmpval);
+                    key = json_object_iter_peek_name(&it);
+                    tmpobj  = json_object_iter_peek_value(&it);
+                    json_object_to_zval(tmpobj, tmpval, options TSRMLS_CC);
+
+                    if (options & PHP_JSON_OBJECT_AS_ARRAY) {
+                        add_assoc_zval(return_value, key, tmpval);
+                    } else if (*key) {
+                        add_property_zval(return_value, key, tmpval);
+                    } else {
+                        add_property_zval(return_value, "_empty_", tmpval);
+                    }
+                    Z_DELREF_P(tmpval);
+                    json_object_iter_next(&it);
+                }
+                break;
 
             default:
 			    php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);

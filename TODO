@@ -2,8 +2,8 @@ DONE
 ====
 - json_encode
   https://bugs.php.net/bug.php?id=63588
+- json_decode
 
 TODO
 ====
-- json_decode
-
+- run-tests
