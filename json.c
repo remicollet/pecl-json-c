@@ -739,10 +739,6 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
         json_object_to_zval(new_obj, return_value, options TSRMLS_CC);
         json_object_put(new_obj);
     } else {
-        if (json_tokener_get_error(tok)) {
-            php_error_docref(NULL TSRMLS_CC, E_WARNING, "Parser error '%d'", json_tokener_get_error(tok));
-        }
-
         switch (json_tokener_get_error(tok)) {
             case json_tokener_success:
                 break;
