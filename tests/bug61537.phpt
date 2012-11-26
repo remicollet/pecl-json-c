@@ -1,40 +1,39 @@
 --TEST--
-Bug #54058 (json_last_error() invalid UTF-8 produces wrong error)
+Bug #61537 (json_encode() incorrectly truncates/discards information)
 --SKIPIF--
 <?php if (!extension_loaded("json")) print "skip"; ?>
 --FILE--
 <?php
+$invalid_utf8 = "\x9f";
 
-$bad_utf8 = quoted_printable_decode('=B0');
-
-json_encode($bad_utf8);
+var_dump(json_encode($invalid_utf8));
 var_dump(json_last_error(), json_last_error_msg());
 
-$a = new stdclass;
-$a->foo = quoted_printable_decode('=B0');
-json_encode($a);
+var_dump(json_encode($invalid_utf8, JSON_PARTIAL_OUTPUT_ON_ERROR));
 var_dump(json_last_error(), json_last_error_msg());
 
-$b = new stdclass;
-$b->foo = $bad_utf8;
-$b->bar = 1;
-json_encode($b);
+echo "\n";
+
+$invalid_utf8 = "an invalid sequen\xce in the middle of a string";
+
+var_dump(json_encode($invalid_utf8));
 var_dump(json_last_error(), json_last_error_msg());
 
-$c = array(
-    'foo' => $bad_utf8,
-    'bar' => 1
-);
-json_encode($c);
+var_dump(json_encode($invalid_utf8, JSON_PARTIAL_OUTPUT_ON_ERROR));
 var_dump(json_last_error(), json_last_error_msg());
 
 ?>
 --EXPECTF--
+bool(false)
 int(5)
 string(56) "Malformed UTF-8 characters, possibly incorrectly encoded"
+string(4) "null"
 int(5)
 string(56) "Malformed UTF-8 characters, possibly incorrectly encoded"
+
+bool(false)
 int(5)
 string(56) "Malformed UTF-8 characters, possibly incorrectly encoded"
+string(4) "null"
 int(5)
 string(56) "Malformed UTF-8 characters, possibly incorrectly encoded"
