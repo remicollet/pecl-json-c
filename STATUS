@@ -11,7 +11,7 @@ CWD         : /home/remi/test/json/pecl-json-c
 Extra dirs  : 
 VALGRIND    : Not used
 =====================================================================
-TIME START 2012-11-25 10:16:40
+TIME START 2012-11-25 10:18:44
 =====================================================================
 TEST 1/41 [tests/001.phpt]PASS json_decode() tests [tests/001.phpt] 
 TEST 2/41 [tests/002.phpt]PASS json_encode() tests [tests/002.phpt] 
@@ -55,7 +55,7 @@ TEST 39/41 [tests/pass002.phpt]PASS JSON (http://www.crockford.com/JSON/JSON_ch
 TEST 40/41 [tests/pass003.phpt]PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass3.json) [tests/pass003.phpt] 
 TEST 41/41 [tests/serialize.phpt]PASS json_encode() Serialization tests [tests/serialize.phpt] 
 =====================================================================
-TIME END 2012-11-25 10:16:41
+TIME END 2012-11-25 10:18:45
 
 =====================================================================
 TEST RESULT SUMMARY
