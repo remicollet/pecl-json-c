@@ -12,8 +12,7 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author: Remi Collet <remi@php.net>                                   |
-  | Json orginal extension author: Omar Kilani <omar@php.net>            |
+  | Author: Omar Kilani <omar@php.net>                                   |
   +----------------------------------------------------------------------+
 */
 
@@ -164,7 +163,11 @@ static PHP_MINFO_FUNCTION(json)
 	php_info_print_table_start();
 	php_info_print_table_row(2, "json support", "enabled");
 	php_info_print_table_row(2, "json version", PHP_JSON_VERSION);
-	php_info_print_table_row(2, "JSON-C version", LIBJSON_VERSION);
+#ifdef LIBJSON_VERSION
+	php_info_print_table_row(2, "JSON-C version", LIBJSON_VERSION " (system)");
+#else
+	php_info_print_table_row(2, "JSON-C version", "0.10 (bundled)");
+#endif
 	php_info_print_table_end();
 }
 /* }}} */

@@ -12,8 +12,7 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author: Remi Collet <remi@php.net>                                   |
-  | Json orginal extension author: Omar Kilani <omar@php.net>            |
+  | Author: Omar Kilani <omar@php.net>                                   |
   +----------------------------------------------------------------------+
 */
 
@@ -22,7 +21,7 @@
 #ifndef PHP_JSON_H
 #define PHP_JSON_H
 
-#define PHP_JSON_VERSION "2.0.0-dev"
+#define PHP_JSON_VERSION "1.3.0-dev"
 #include "ext/standard/php_smart_str.h"
 #include <json/json.h>
 
