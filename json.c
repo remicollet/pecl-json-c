@@ -772,6 +772,7 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 
             default:
                 JSON_G(error_code) = PHP_JSON_ERROR_SYNTAX;
+                JSON_G(parser_code) = json_tokener_get_error(tok);
         }
     }
 	json_tokener_free(tok);
@@ -869,7 +870,7 @@ static PHP_FUNCTION(json_last_error_msg)
 		case PHP_JSON_ERROR_CTRL_CHAR:
 			RETURN_STRING("Control character error, possibly incorrectly encoded", 1);
 		case PHP_JSON_ERROR_SYNTAX:
-			RETURN_STRING("Syntax error", 1);
+			RETURN_STRING(json_tokener_error_desc(JSON_G(parser_code)), 1);
 		case PHP_JSON_ERROR_UTF8:
 			RETURN_STRING("Malformed UTF-8 characters, possibly incorrectly encoded", 1);
 		case PHP_JSON_ERROR_RECURSION:
