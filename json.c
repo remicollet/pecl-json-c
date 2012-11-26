@@ -686,7 +686,7 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
                 break;
 
             case json_type_int:
-                RETVAL_LONG(json_object_get_int(new_obj));
+                RETVAL_LONG(json_object_get_int64(new_obj));
                 break;
 
             case json_type_boolean:

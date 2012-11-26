@@ -11,7 +11,7 @@ CWD         : /home/remi/test/json/pecl-json-c
 Extra dirs  : 
 VALGRIND    : Not used
 =====================================================================
-TIME START 2012-11-26 13:45:19
+TIME START 2012-11-26 13:51:02
 =====================================================================
 TEST 1/45 [tests/001.phpt]PASS json_decode() tests [tests/001.phpt] 
 TEST 2/45 [tests/002.phpt]PASS json_encode() tests [tests/002.phpt] 
@@ -33,7 +33,7 @@ TEST 17/45 [tests/bug43941.phpt]PASS Bug #43941 (json_encode() invalid UTF-8) [
 TEST 18/45 [tests/bug45791.phpt]PASS Bug #45791 (json_decode() does not handle number 0e0) [tests/bug45791.phpt] 
 TEST 19/45 [tests/bug46215.phpt]PASS Bug #46215 (json_encode mutates its parameter and has some class-specific state) [tests/bug46215.phpt] 
 TEST 20/45 [tests/bug46944.phpt]PASS Bug #46944 (json_encode() doesn't handle 3 byte utf8 correctly) [tests/bug46944.phpt] 
-TEST 21/45 [tests/bug47644.phpt]FAIL Bug #47644 (valid large integers are truncated) [tests/bug47644.phpt] 
+TEST 21/45 [tests/bug47644.phpt]PASS Bug #47644 (valid large integers are truncated) [tests/bug47644.phpt] 
 TEST 22/45 [tests/bug53946.phpt]PASS bug #53946 (json_encode() with JSON_UNESCAPED_UNICODE) [tests/bug53946.phpt] 
 TEST 23/45 [tests/bug54058.phpt]PASS Bug #54058 (json_last_error() invalid UTF-8 produces wrong error) [tests/bug54058.phpt] 
 TEST 24/45 [tests/bug54484.phpt]PASS Bug #54484 (Empty string in json_decode doesn't reset json_last_error) [tests/bug54484.phpt] 
@@ -59,7 +59,7 @@ TEST 43/45 [tests/pass003.phpt]PASS JSON (http://www.crockford.com/JSON/JSON_ch
 TEST 44/45 [tests/serialize.phpt]PASS json_encode() Serialization tests [tests/serialize.phpt] 
 TEST 45/45 [tests/unsupported_type_error.phpt]PASS An error is thrown when an unsupported type is encoded [tests/unsupported_type_error.phpt] 
 =====================================================================
-TIME END 2012-11-26 13:45:21
+TIME END 2012-11-26 13:51:03
 
 =====================================================================
 TEST RESULT SUMMARY
@@ -71,11 +71,11 @@ Exts tested     :   30
 Number of tests :   45                44
 Tests skipped   :    1 (  2.2%) --------
 Tests warned    :    0 (  0.0%) (  0.0%)
-Tests failed    :    8 ( 17.8%) ( 18.2%)
+Tests failed    :    7 ( 15.6%) ( 15.9%)
 Expected fail   :    0 (  0.0%) (  0.0%)
-Tests passed    :   36 ( 80.0%) ( 81.8%)
+Tests passed    :   37 ( 82.2%) ( 84.1%)
 ---------------------------------------------------------------------
-Time taken      :    2 seconds
+Time taken      :    1 seconds
 =====================================================================
 
 =====================================================================
@@ -85,7 +85,6 @@ json_last_error() tests [tests/007.phpt]
 json_decode() with large integers [tests/008.phpt]
 Bug #41403 (json_decode cannot decode floats if localeconv decimal_point is not '.') [tests/bug41403.phpt]
 Bug #42090 (json_decode causes segmentation fault) [tests/bug42090.phpt]
-Bug #47644 (valid large integers are truncated) [tests/bug47644.phpt]
 JSON (http://www.crockford.com/JSON/JSON_checker/test/fail*.json) [tests/fail001.phpt]
 JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.1_64bit.phpt]
 JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.phpt]
