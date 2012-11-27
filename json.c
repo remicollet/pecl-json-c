@@ -28,7 +28,11 @@
 #include "ext/standard/html.h"
 #include "ext/standard/php_smart_str.h"
 #include "php_json.h"
-#include "json/json.h"
+#ifdef LIBJSON_VERSION
+#include <json.h>
+#else
+#include "json-c/json.h"
+#endif
 #include <zend_exceptions.h>
 
 static PHP_MINFO_FUNCTION(json);

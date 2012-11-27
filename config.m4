@@ -23,8 +23,11 @@ if test "$PHP_JSON" != "no"; then
 	  if test -z "$LIBJSON_VERSION"; then
 		  AC_MSG_RESULT(not found)
 		  AC_MSG_ERROR(Please reinstall json-c.)
-	  else
+	  elif test -f $LIBJSON_INCDIR/json/json.h ; then
 		  AC_MSG_RESULT($LIBJSON_VERSION)
+      else
+		  AC_MSG_RESULT(json.h not found)
+		  AC_MSG_ERROR(Please reinstall json-c.)
 	  fi
 
 		PHP_CHECK_LIBRARY(json, json_object_iter_end,
@@ -38,7 +41,7 @@ if test "$PHP_JSON" != "no"; then
 	  AC_DEFINE_UNQUOTED(LIBJSON_VERSION, "$LIBJSON_VERSION", [ ])
 
 	  PHP_ADD_LIBRARY_WITH_PATH(json, $LIBJSON_LIBDIR, JSON_SHARED_LIBADD)
-	  PHP_ADD_INCLUDE($LIBJSON_INCDIR)
+	  PHP_ADD_INCLUDE($LIBJSON_INCDIR/json)
 	  
 	  PHP_NEW_EXTENSION(json, json.c, $ext_shared)
   else
