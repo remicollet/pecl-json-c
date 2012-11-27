@@ -759,7 +759,7 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 
 	RETVAL_NULL();
 
-	tok = json_tokener_new();
+	tok = json_tokener_new_ex(depth);
 	new_obj = json_tokener_parse_ex(tok, str, str_len);
 	if (json_tokener_get_error(tok)==json_tokener_continue) {
 		new_obj = json_tokener_parse_ex(tok, "", -1);

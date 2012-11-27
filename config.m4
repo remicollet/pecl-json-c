@@ -30,11 +30,11 @@ if test "$PHP_JSON" != "no"; then
 		  AC_MSG_ERROR(Please reinstall json-c.)
 	  fi
 
-		PHP_CHECK_LIBRARY(json, json_object_iter_end,
+		PHP_CHECK_LIBRARY(json, json_tokener_new_ex,
 		[
 		  AC_DEFINE_UNQUOTED(LIBJSON_VERSION, "$LIBJSON_VERSION", [system json-c version])
 		],[
-		  AC_MSG_ERROR([Sorry, Incompatible json-c version, requires >= 0.10 with json_object_iterator.])
+		  AC_MSG_ERROR([Sorry, Incompatible json-c version, requires >= 0.11])
 		],[
 		  -L$LIBJSON_LIBDIR
 		])
