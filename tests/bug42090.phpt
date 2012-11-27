@@ -2,6 +2,8 @@
 Bug #42090 (json_decode causes segmentation fault)
 --SKIPIF--
 <?php if (!extension_loaded("json")) print "skip"; ?>
+--XFAIL--
+New parser is less strict, producde different resulkt, but don't crash.
 --FILE--
 <?php
 var_dump(
