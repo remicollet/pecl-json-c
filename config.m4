@@ -45,7 +45,7 @@ if test "$PHP_JSON" != "no"; then
 	  PHP_NEW_EXTENSION(json, json.c, $ext_shared)
   else
       AC_CHECK_HEADERS(fcntl.h limits.h strings.h syslog.h unistd.h [sys/param.h] stdarg.h inttypes.h)
-      AC_CHECK_FUNCS(strndup strerror vsnprintf vasprintf open vsyslog strncasecmp)
+      AC_CHECK_FUNCS(strcasecmp strdup strndup strerror snprintf vsnprintf vasprintf open vsyslog strncasecmp)
 
 	  PHP_LIBJSON_SOURCES="json-c/arraylist.c \
 	                       json-c/debug.c \

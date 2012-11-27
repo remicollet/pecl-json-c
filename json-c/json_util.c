@@ -20,19 +20,19 @@
 #include <errno.h>
 #include <ctype.h>
 
-#if HAVE_SYS_TYPES_H
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif /* HAVE_SYS_TYPES_H */
 
-#if HAVE_SYS_STAT_H
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif /* HAVE_SYS_STAT_H */
 
-#if HAVE_FCNTL_H
+#ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif /* HAVE_FCNTL_H */
 
-#if HAVE_UNISTD_H
+#ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif /* HAVE_UNISTD_H */
 
@@ -42,10 +42,16 @@
 # include <io.h>
 #endif /* defined(WIN32) */
 
-#if !HAVE_OPEN && defined(WIN32)
+#if !defined(HAVE_OPEN) && defined(WIN32)
 # define open _open
 #endif
 
+#if !defined(HAVE_SNPRINTF) && defined(_MSC_VER)
+  /* MSC has the version as _snprintf */
+# define snprintf _snprintf
+#elif !defined(HAVE_SNPRINTF)
+# error You do not have snprintf on your system.
+#endif /* HAVE_SNPRINTF */
 
 #include "bits.h"
 #include "debug.h"
@@ -65,7 +71,7 @@ struct json_object* json_object_from_file(const char *filename)
   if((fd = open(filename, O_RDONLY)) < 0) {
     MC_ERROR("json_object_from_file: error reading file %s: %s\n",
 	     filename, strerror(errno));
-    return NULL; // XAX this is an API change!
+    return NULL;
   }
   if(!(pb = printbuf_new())) {
     close(fd);
@@ -141,11 +147,14 @@ int json_parse_int64(const char *buf, int64_t *retval)
 	int64_t num64;
 	const char *buf_skip_space;
 	int orig_has_neg;
+	int _errno;
+	errno = 0; // sscanf won't always set errno, so initialize
 	if (sscanf(buf, "%" SCNd64, &num64) != 1)
 	{
 		MC_DEBUG("Failed to parse, sscanf != 1\n");
 		return 1;
 	}
+	_errno = errno;
 	buf_skip_space = buf;
 	orig_has_neg = 0;
 	// Skip leading spaces
@@ -162,7 +171,7 @@ int json_parse_int64(const char *buf, int64_t *retval)
 	if (buf_skip_space[0] == '0' && buf_skip_space[1] == '\0')
 		orig_has_neg = 0; // "-0" is the same as just plain "0"
 	
-	if (errno != ERANGE)
+	if (_errno != ERANGE)
 	{
 		char buf_cmp[100];
 		char *buf_cmp_start = buf_cmp;
@@ -190,10 +199,10 @@ int json_parse_int64(const char *buf, int64_t *retval)
 		    )
 		   )
 		{
-			errno = ERANGE;
+			_errno = ERANGE;
 		}
 	}
-	if (errno == ERANGE)
+	if (_errno == ERANGE)
 	{
 		if (orig_has_neg)
 			num64 = INT64_MIN;
@@ -204,7 +213,7 @@ int json_parse_int64(const char *buf, int64_t *retval)
 	return 0;
 }
 
-#if HAVE_REALLOC == 0
+#ifndef HAVE_REALLOC
 void* rpl_realloc(void* p, size_t n)
 {
 	if (n == 0)

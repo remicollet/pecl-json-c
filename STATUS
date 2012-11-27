@@ -11,7 +11,7 @@ CWD         : /home/remi/test/json/pecl-json-c
 Extra dirs  : 
 VALGRIND    : Not used
 =====================================================================
-TIME START 2012-11-27 06:52:03
+TIME START 2012-11-27 07:23:41
 =====================================================================
 TEST 1/46 [tests/001.phpt]PASS json_decode() tests [tests/001.phpt] 
 TEST 2/46 [tests/002.phpt]PASS json_encode() tests [tests/002.phpt] 
@@ -53,14 +53,14 @@ TEST 37/46 [tests/json_encode_pretty_print.phpt]PASS json_encode() with JSON_PR
 TEST 38/46 [tests/json_encode_unescaped_slashes.phpt]PASS json_decode() tests [tests/json_encode_unescaped_slashes.phpt] 
 TEST 39/46 [tests/jsonp.phpt]PASS json_decode() with comments [tests/jsonp.phpt] 
 TEST 40/46 [tests/pass001.1.phpt]SKIP JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.1.phpt] reason: this test is for 32bit platform only
-TEST 41/46 [tests/pass001.1_64bit.phpt]FAIL JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.1_64bit.phpt] 
-TEST 42/46 [tests/pass001.phpt]FAIL JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.phpt] 
+TEST 41/46 [tests/pass001.1_64bit.phpt]PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.1_64bit.phpt] 
+TEST 42/46 [tests/pass001.phpt]PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.phpt] 
 TEST 43/46 [tests/pass002.phpt]PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass2.json) [tests/pass002.phpt] 
 TEST 44/46 [tests/pass003.phpt]PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass3.json) [tests/pass003.phpt] 
 TEST 45/46 [tests/serialize.phpt]PASS json_encode() Serialization tests [tests/serialize.phpt] 
 TEST 46/46 [tests/unsupported_type_error.phpt]PASS An error is thrown when an unsupported type is encoded [tests/unsupported_type_error.phpt] 
 =====================================================================
-TIME END 2012-11-27 06:52:05
+TIME END 2012-11-27 07:23:43
 
 =====================================================================
 TEST RESULT SUMMARY
@@ -72,9 +72,9 @@ Exts tested     :   30
 Number of tests :   46                45
 Tests skipped   :    1 (  2.2%) --------
 Tests warned    :    0 (  0.0%) (  0.0%)
-Tests failed    :    6 ( 13.0%) ( 13.3%)
+Tests failed    :    4 (  8.7%) (  8.9%)
 Expected fail   :    1 (  2.2%) (  2.2%)
-Tests passed    :   38 ( 82.6%) ( 84.4%)
+Tests passed    :   40 ( 87.0%) ( 88.9%)
 ---------------------------------------------------------------------
 Time taken      :    2 seconds
 =====================================================================
@@ -92,6 +92,4 @@ json_decode() with large integers [tests/008.phpt]
 Bug #41403 (json_decode cannot decode floats if localeconv decimal_point is not '.') [tests/bug41403.phpt]
 Bug #42090 (json_decode causes segmentation fault) [tests/bug42090.phpt]
 JSON (http://www.crockford.com/JSON/JSON_checker/test/fail*.json) [tests/fail001.phpt]
-JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.1_64bit.phpt]
-JSON (http://www.crockford.com/JSON/JSON_checker/test/pass1.json) [tests/pass001.phpt]
 =====================================================================

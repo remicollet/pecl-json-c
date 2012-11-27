@@ -31,13 +31,19 @@
 #include "json_tokener.h"
 #include "json_util.h"
 
+#if !HAVE_STRDUP && defined(_MSC_VER)
+  /* MSC has the version as _strdup */
+# define strdup _strdup
+#elif !HAVE_STRDUP
+# error You do not have strdup on your system.
+#endif /* HAVE_STRDUP */
+
 #if !HAVE_STRNCASECMP && defined(_MSC_VER)
   /* MSC has the version as _strnicmp */
 # define strncasecmp _strnicmp
 #elif !HAVE_STRNCASECMP
 # error You do not have strncasecmp on your system.
 #endif /* HAVE_STRNCASECMP */
-
 
 static const char* json_null_str = "null";
 static const char* json_true_str = "true";
@@ -417,10 +423,12 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
       case 'n':
       case 'r':
       case 't':
+      case 'f':
 	if(c == 'b') printbuf_memappend_fast(tok->pb, "\b", 1);
 	else if(c == 'n') printbuf_memappend_fast(tok->pb, "\n", 1);
 	else if(c == 'r') printbuf_memappend_fast(tok->pb, "\r", 1);
 	else if(c == 't') printbuf_memappend_fast(tok->pb, "\t", 1);
+	else if(c == 'f') printbuf_memappend_fast(tok->pb, "\f", 1);
 	state = saved_state;
 	break;
       case 'u':
