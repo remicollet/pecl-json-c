@@ -21,7 +21,7 @@ if test "$PHP_JSON" != "no"; then
 		LIBJSON_VERSION=`$PKG_CONFIG json --modversion`
 	  fi
 	  if test -z "$LIBJSON_VERSION"; then
-		  AC_MSG_RESULT(not found)
+		  AC_MSG_RESULT(version not found)
 		  AC_MSG_ERROR(Please reinstall json-c.)
 	  elif test -f $LIBJSON_INCDIR/json/json.h ; then
 		  AC_MSG_RESULT($LIBJSON_VERSION)
@@ -32,13 +32,12 @@ if test "$PHP_JSON" != "no"; then
 
 		PHP_CHECK_LIBRARY(json, json_object_iter_end,
 		[
-		  AC_DEFINE([HAVE_JSON], 1 ,[whether to enable JavaScript Object Serialization support])
+		  AC_DEFINE_UNQUOTED(LIBJSON_VERSION, "$LIBJSON_VERSION", [system json-c version])
 		],[
 		  AC_MSG_ERROR([Sorry, Incompatible json-c version, requires >= 0.10 with json_object_iterator.])
 		],[
 		  -L$LIBJSON_LIBDIR
 		])
-	  AC_DEFINE_UNQUOTED(LIBJSON_VERSION, "$LIBJSON_VERSION", [ ])
 
 	  PHP_ADD_LIBRARY_WITH_PATH(json, $LIBJSON_LIBDIR, JSON_SHARED_LIBADD)
 	  PHP_ADD_INCLUDE($LIBJSON_INCDIR/json)
