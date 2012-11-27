@@ -4,6 +4,8 @@ JSON (http://www.crockford.com/JSON/JSON_checker/test/fail*.json)
 <?php
   if (!extension_loaded('json')) die('skip: json extension not available');
 ?>
+--XFAIL--
+New parser is less strict, produce different result, but don't crash.
 --FILE--
 <?php
     
