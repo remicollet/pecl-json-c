@@ -9,9 +9,9 @@ INI actual  : /home/remi/test/json/pecl-json-c
 More .INIs  :  
 CWD         : /home/remi/test/json/pecl-json-c
 Extra dirs  : 
-VALGRIND    : Not used
+VALGRIND    : valgrind-3.8.1
 =====================================================================
-TIME START 2012-11-27 15:07:39
+TIME START 2012-11-27 15:13:38
 =====================================================================
 PASS json_decode() tests [tests/001.phpt] 
 PASS json_encode() tests [tests/002.phpt] 
@@ -61,7 +61,7 @@ PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass3.json) [tests/pa
 PASS json_encode() Serialization tests [tests/serialize.phpt] 
 PASS An error is thrown when an unsupported type is encoded [tests/unsupported_type_error.phpt] 
 =====================================================================
-TIME END 2012-11-27 15:07:41
+TIME END 2012-11-27 15:15:05
 
 =====================================================================
 TEST RESULT SUMMARY
@@ -75,9 +75,10 @@ Tests skipped   :    1 (  2.1%) --------
 Tests warned    :    0 (  0.0%) (  0.0%)
 Tests failed    :    1 (  2.1%) (  2.2%)
 Expected fail   :    3 (  6.4%) (  6.5%)
+Tests leaked    :    0 (  0.0%) (  0.0%)
 Tests passed    :   42 ( 89.4%) ( 91.3%)
 ---------------------------------------------------------------------
-Time taken      :    2 seconds
+Time taken      :   87 seconds
 =====================================================================
 
 =====================================================================
