@@ -36,10 +36,6 @@
 # include <unistd.h>
 #endif /* HAVE_UNISTD_H */
 
-#ifdef HAVE_LOCALE_H
-#include <locale.h>
-#endif /* HAVE_LOCALE_H */
-
 #ifdef WIN32
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
@@ -148,37 +144,24 @@ int json_object_to_file(char *filename, struct json_object *obj)
 
 int json_parse_double(const char *buf, double *retval)
 {
-	int ret;
-#ifdef HAVE_SETLOCALE
-	char *old=NULL, *tmp;
-
-	tmp = setlocale(LC_NUMERIC, NULL);
-	if (tmp) old = strdup(tmp);
-	setlocale(LC_NUMERIC, "C");
-#endif
-
-	ret = sscanf(buf, "%lf", retval);
-
-#ifdef HAVE_SETLOCALE
-	setlocale(LC_NUMERIC, old);
-	if (old) free(old);
-#endif
-
-	return (ret==1 ? 0 : 1);
+  return (sscanf(buf, "%lf", retval)==1 ? 0 : 1);
 }
 
 int json_parse_int64(const char *buf, int64_t *retval)
 {
 	int64_t num64;
-	const char *buf_skip_space;
+#ifndef HAS_SSCANF_ERANGE	const char *buf_skip_space;
 	int orig_has_neg;
 	int _errno;
+
 	errno = 0; // sscanf won't always set errno, so initialize
+#endif
 	if (sscanf(buf, "%" SCNd64, &num64) != 1)
 	{
 		MC_DEBUG("Failed to parse, sscanf != 1\n");
 		return 1;
 	}
+#ifndef HAS_SSCANF_ERANGE	const char *buf_skip_space;
 	_errno = errno;
 	buf_skip_space = buf;
 	orig_has_neg = 0;
@@ -234,6 +217,7 @@ int json_parse_int64(const char *buf, int64_t *retval)
 		else
 			num64 = INT64_MAX;
 	}
+#endif
 	*retval = num64;
 	return 0;
 }

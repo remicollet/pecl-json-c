@@ -2,16 +2,16 @@
 =====================================================================
 PHP         : /usr/bin/php 
 PHP_SAPI    : cli
-PHP_VERSION : 5.4.9
-ZEND_VERSION: 2.4.0
-PHP_OS      : Linux - Linux dixsept.famillecollet.com 3.6.7-4.fc17.x86_64 #1 SMP Tue Nov 20 19:40:01 UTC 2012 x86_64
+PHP_VERSION : 5.5.0-dev
+ZEND_VERSION: 2.5.0-dev
+PHP_OS      : Linux - Linux dixsept.famillecollet.com 3.6.9-2.fc17.x86_64 #1 SMP Tue Dec 4 13:26:04 UTC 2012 x86_64
 INI actual  : /home/remi/test/json/pecl-json-c
 More .INIs  :  
 CWD         : /home/remi/test/json/pecl-json-c
 Extra dirs  : 
-VALGRIND    : valgrind-3.8.1
+VALGRIND    : Not used
 =====================================================================
-TIME START 2012-11-27 15:13:38
+TIME START 2012-12-13 15:31:23
 =====================================================================
 PASS json_decode() tests [tests/001.phpt] 
 PASS json_encode() tests [tests/002.phpt] 
@@ -61,13 +61,13 @@ PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass3.json) [tests/pa
 PASS json_encode() Serialization tests [tests/serialize.phpt] 
 PASS An error is thrown when an unsupported type is encoded [tests/unsupported_type_error.phpt] 
 =====================================================================
-TIME END 2012-11-27 15:15:05
+TIME END 2012-12-13 15:31:25
 
 =====================================================================
 TEST RESULT SUMMARY
 ---------------------------------------------------------------------
 Exts skipped    :    0
-Exts tested     :   30
+Exts tested     :   17
 ---------------------------------------------------------------------
 
 Number of tests :   47                46
@@ -75,10 +75,9 @@ Tests skipped   :    1 (  2.1%) --------
 Tests warned    :    0 (  0.0%) (  0.0%)
 Tests failed    :    1 (  2.1%) (  2.2%)
 Expected fail   :    3 (  6.4%) (  6.5%)
-Tests leaked    :    0 (  0.0%) (  0.0%)
 Tests passed    :   42 ( 89.4%) ( 91.3%)
 ---------------------------------------------------------------------
-Time taken      :   87 seconds
+Time taken      :    2 seconds
 =====================================================================
 
 =====================================================================

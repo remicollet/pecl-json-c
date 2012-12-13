@@ -15,6 +15,8 @@ $jsoned = json_encode($ary);
 $b = microtime(true);
 printf("Encode in %.5f sec, %ld bytes\n", $b-$a, strlen($jsoned));
 
+file_put_contents("bench.json", $jsoned);
+
 $a = microtime(true);
 $json = json_decode($jsoned);
 $b = microtime(true);

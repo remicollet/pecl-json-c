@@ -44,6 +44,23 @@ if test "$PHP_JSON" != "no"; then
 	  
 	  PHP_NEW_EXTENSION(json, json.c, $ext_shared)
   else
+      AC_MSG_CHECKING([for working sscanf])
+      AC_TRY_RUN([
+#include <stdio.h>
+#include <stdint.h>
+#include <errno.h>
+int main(int argc, char *argv[]){
+long i;
+errno=0;
+return (sscanf("1234567890123456789012345","%ld",&i)==1 && errno==ERANGE && i==INT64_MAX ? 0 : 1);
+      }],[
+          AC_MSG_RESULT([yes])
+          AC_DEFINE(HAS_SSCANF_ERANGE, 1, [Whether correctly return ERANGE])
+      ],[
+          AC_MSG_RESULT([no, not working])
+      ],[
+          AC_MSG_RESULT([no, not found])
+      ])
       AC_CHECK_HEADERS(fcntl.h limits.h strings.h syslog.h unistd.h [sys/param.h] stdarg.h inttypes.h locale.h)
       AC_CHECK_FUNCS(strcasecmp strdup strndup strerror snprintf vsnprintf vasprintf open vsyslog strncasecmp setlocale)
 
