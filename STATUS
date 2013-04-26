@@ -2,16 +2,16 @@
 =====================================================================
 PHP         : /usr/bin/php 
 PHP_SAPI    : cli
-PHP_VERSION : 5.5.0-dev
+PHP_VERSION : 5.5.0beta4
 ZEND_VERSION: 2.5.0-dev
-PHP_OS      : Linux - Linux dixsept.famillecollet.com 3.6.9-2.fc17.x86_64 #1 SMP Tue Dec 4 13:26:04 UTC 2012 x86_64
+PHP_OS      : Linux - Linux dixsept.famillecollet.com 3.8.4-102.fc17.x86_64 #1 SMP Sun Mar 24 13:09:09 UTC 2013 x86_64
 INI actual  : /home/remi/test/json/pecl-json-c
 More .INIs  :  
 CWD         : /home/remi/test/json/pecl-json-c
 Extra dirs  : 
 VALGRIND    : Not used
 =====================================================================
-TIME START 2012-12-13 15:31:23
+TIME START 2013-04-26 13:10:30
 =====================================================================
 PASS json_decode() tests [tests/001.phpt] 
 PASS json_encode() tests [tests/002.phpt] 
@@ -61,7 +61,7 @@ PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass3.json) [tests/pa
 PASS json_encode() Serialization tests [tests/serialize.phpt] 
 PASS An error is thrown when an unsupported type is encoded [tests/unsupported_type_error.phpt] 
 =====================================================================
-TIME END 2012-12-13 15:31:25
+TIME END 2013-04-26 13:10:31
 
 =====================================================================
 TEST RESULT SUMMARY
@@ -77,7 +77,7 @@ Tests failed    :    1 (  2.1%) (  2.2%)
 Expected fail   :    3 (  6.4%) (  6.5%)
 Tests passed    :   42 ( 89.4%) ( 91.3%)
 ---------------------------------------------------------------------
-Time taken      :    2 seconds
+Time taken      :    1 seconds
 =====================================================================
 
 =====================================================================

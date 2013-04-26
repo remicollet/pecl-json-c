@@ -23,7 +23,6 @@
 
 #define PHP_JSON_VERSION "1.3.0-dev"
 #include "ext/standard/php_smart_str.h"
-#include <json/json.h>
 
 extern zend_module_entry json_module_entry;
 #define phpext_json_ptr &json_module_entry
@@ -49,7 +48,7 @@ enum error_codes {
     PHP_JSON_ERROR_INF_OR_NAN,
     PHP_JSON_ERROR_UNSUPPORTED_TYPE
 };
-#define JSON_PARSER_DEFAULT_DEPTH JSON_TOKENER_MAX_DEPTH
+#define JSON_PARSER_DEFAULT_DEPTH 512
 
 ZEND_BEGIN_MODULE_GLOBALS(json)
 	int encoder_depth;

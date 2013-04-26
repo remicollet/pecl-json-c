@@ -66,6 +66,7 @@ return (sscanf("1234567890123456789012345","%ld",&i)==1 && errno==ERANGE && i==I
 
 	  PHP_LIBJSON_SOURCES="json-c/arraylist.c \
 	                       json-c/debug.c \
+	                       json-c/json_c_version.c \
 	                       json-c/json_object.c \
 	  					   json-c/json_object_iterator.c \
 	  					   json-c/json_tokener.c \

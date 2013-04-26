@@ -31,7 +31,7 @@
 #ifdef LIBJSON_VERSION
 #include <json.h>
 #else
-#include "json-c/json.h"
+#include <json-c/json.h>
 #endif
 #include <zend_exceptions.h>
 
@@ -168,9 +168,10 @@ static PHP_MINFO_FUNCTION(json)
 	php_info_print_table_row(2, "json support", "enabled");
 	php_info_print_table_row(2, "json version", PHP_JSON_VERSION);
 #ifdef LIBJSON_VERSION
-	php_info_print_table_row(2, "JSON-C version", LIBJSON_VERSION " (system)");
+	php_info_print_table_row(2, "JSON-C headers version", JSON_C_VERSION);
+	php_info_print_table_row(2, "JSON-C library version", json_c_version());
 #else
-	php_info_print_table_row(2, "JSON-C version", "0.10 (bundled)");
+	php_info_print_table_row(2, "JSON-C version", "0.11 (bundled)");
 #endif
 	php_info_print_table_end();
 }
@@ -693,7 +694,11 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
                 break;
 
             case json_type_int:
+#if SIZEOF_LONG_LONG > 4
                 RETVAL_LONG(json_object_get_int64(new_obj));
+#else
+                RETVAL_LONG(json_object_get_int(new_obj));
+#endif
                 break;
 
             case json_type_boolean:
@@ -760,6 +765,9 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 	RETVAL_NULL();
 
 	tok = json_tokener_new_ex(depth);
+	if (!tok) {
+		return;
+	}
 	new_obj = json_tokener_parse_ex(tok, str, str_len);
 	if (json_tokener_get_error(tok)==json_tokener_continue) {
 		new_obj = json_tokener_parse_ex(tok, "", -1);
