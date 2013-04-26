@@ -13,12 +13,3 @@ TODO
 JSON-C upstream waiting pull request
 ======
 
-* Make maximum recursion depth a runtime option
-  https://github.com/json-c/json-c/pull/51
-
-* Float parsing should be locale independent
-  https://github.com/json-c/json-c/pull/52
-
-* Parser optimization
-  Optimize json_parse_int64 when sscanf work as expected
-  https://github.com/json-c/json-c/pull/55

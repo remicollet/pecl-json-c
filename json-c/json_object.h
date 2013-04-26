@@ -42,6 +42,10 @@ extern "C" {
  * for an example of the format.
  */
 #define JSON_C_TO_STRING_PRETTY     (1<<1)
+/**
+ * A flag to drop trailing zero for float values
+ */
+#define JSON_C_TO_STRING_NOZERO     (1<<2)
 
 #undef FALSE
 #define FALSE ((json_bool)0)
@@ -215,6 +219,11 @@ extern struct json_object* json_object_new_object(void);
  */
 extern struct lh_table* json_object_get_object(struct json_object *obj);
 
+/** Get the size of an object in terms of the number of fields it has.
+ * @param obj the json_object whose length to return
+ */
+extern int json_object_object_length(struct json_object* obj);
+
 /** Add an object field to a json_object of type json_type_object
  *
  * The reference count will *not* be incremented. This is to make adding
@@ -300,35 +309,35 @@ extern void json_object_object_del(struct json_object* obj, const char *key);
  * @param val the local name for the json_object* object variable defined in
  *            the body
  */
-#if defined(__GNUC__) && !defined(__STRICT_ANSI__)
+#if defined(__GNUC__) && !defined(__STRICT_ANSI__) && __STDC_VERSION__ >= 199901L
 
 # define json_object_object_foreach(obj,key,val) \
 	char *key; \
-	struct json_object *val; \
-	for(struct lh_entry *entry = json_object_get_object(obj)->head, *entry_next = NULL; \
-		({ if(entry) { \
-			key = (char*)entry->k; \
-			val = (struct json_object*)entry->v; \
-			entry_next = entry->next; \
-		} ; entry; }); \
-		entry = entry_next )
+	struct json_object *val __attribute__((__unused__)); \
+	for(struct lh_entry *entry ## key = json_object_get_object(obj)->head, *entry_next ## key = NULL; \
+		({ if(entry ## key) { \
+			key = (char*)entry ## key->k; \
+			val = (struct json_object*)entry ## key->v; \
+			entry_next ## key = entry ## key->next; \
+		} ; entry ## key; }); \
+		entry ## key = entry_next ## key )
 
 #else /* ANSI C or MSC */
 
 # define json_object_object_foreach(obj,key,val) \
 	char *key;\
 	struct json_object *val; \
-	struct lh_entry *entry; \
-	struct lh_entry *entry_next = NULL; \
-	for(entry = json_object_get_object(obj)->head; \
-		(entry ? ( \
-			key = (char*)entry->k, \
-			val = (struct json_object*)entry->v, \
-			entry_next = entry->next, \
-			entry) : 0); \
-		entry = entry_next)
+	struct lh_entry *entry ## key; \
+	struct lh_entry *entry_next ## key = NULL; \
+	for(entry ## key = json_object_get_object(obj)->head; \
+		(entry ## key ? ( \
+			key = (char*)entry ## key->k, \
+			val = (struct json_object*)entry ## key->v, \
+			entry_next ## key = entry ## key->next, \
+			entry ## key) : 0); \
+		entry ## key = entry_next ## key)
 
-#endif /* defined(__GNUC__) && !defined(__STRICT_ANSI__) */
+#endif /* defined(__GNUC__) && !defined(__STRICT_ANSI__) && __STDC_VERSION__ >= 199901L */
 
 /** Iterate through all keys and values of an object (ANSI C Safe)
  * @param obj the json_object instance
