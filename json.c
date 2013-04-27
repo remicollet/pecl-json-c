@@ -36,14 +36,29 @@
 #include <zend_exceptions.h>
 
 static PHP_MINFO_FUNCTION(json);
+
 static PHP_FUNCTION(json_encode);
 static PHP_FUNCTION(json_decode);
 static PHP_FUNCTION(json_last_error);
 static PHP_FUNCTION(json_last_error_msg);
 
+static PHP_METHOD(JsonIncrementalParser, __construct);
+static PHP_METHOD(JsonIncrementalParser, getError);
+static PHP_METHOD(JsonIncrementalParser, parse);
+static PHP_METHOD(JsonIncrementalParser, reset);
+static PHP_METHOD(JsonIncrementalParser, get);
+
 static const char digits[] = "0123456789abcdef";
 
-zend_class_entry *php_json_serializable_ce;
+zend_class_entry *php_json_serializable_ce, *php_json_parser_ce;
+
+static zend_object_handlers php_json_handlers_parser;
+
+struct php_json_object_parser {
+	zend_object     zo;
+	json_tokener   *tok;
+	json_object    *obj;
+};
 
 ZEND_DECLARE_MODULE_GLOBALS(json)
 
@@ -89,13 +104,86 @@ static const zend_function_entry json_serializable_interface[] = {
 };
 /* }}} */
 
+/* {{{ JsonIncrementalParser methods */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_create, 0, 0, 0)
+	ZEND_ARG_INFO(0, depth)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_parse, 0, 0, 1)
+	ZEND_ARG_INFO(0, json)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_get, 0, 0, 0)
+	ZEND_ARG_INFO(0, options)
+ZEND_END_ARG_INFO()
+
+
+static const zend_function_entry json_functions_parser[] = {
+	PHP_ME(JsonIncrementalParser, __construct, arginfo_parser_create, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
+	PHP_ME(JsonIncrementalParser, getError,    NULL,                  ZEND_ACC_PUBLIC)
+	PHP_ME(JsonIncrementalParser, reset,       NULL,                  ZEND_ACC_PUBLIC)
+	PHP_ME(JsonIncrementalParser, parse,       arginfo_parser_parse,  ZEND_ACC_PUBLIC)
+	PHP_ME(JsonIncrementalParser, get,         arginfo_parser_get,    ZEND_ACC_PUBLIC)
+	PHP_FE_END
+};
+/* }}} */
+
+/* {{{ php_json_parser_free
+	 */
+static void php_json_parser_free(void *object TSRMLS_DC)
+{
+	struct php_json_object_parser *intern = (struct php_json_object_parser *) object;
+
+	if (intern->tok) {
+		json_tokener_free(intern->tok);
+	}
+
+	zend_object_std_dtor(&intern->zo TSRMLS_CC);
+	efree(intern);
+}
+/* }}} */
+
+/* {{{ php_json_parser_new
+ */
+static zend_object_value php_json_parser_new(zend_class_entry *class_type TSRMLS_DC)
+{
+	zend_object_value retval;
+	struct php_json_object_parser *intern;
+
+	intern = emalloc(sizeof(struct php_json_object_parser));
+	memset(intern, 0, sizeof(struct php_json_object_parser));
+
+	zend_object_std_init(&intern->zo, class_type TSRMLS_CC);
+	object_properties_init(&intern->zo, class_type);
+
+	intern->tok = NULL;
+	intern->obj = NULL;
+
+	retval.handle = zend_objects_store_put(intern, NULL, php_json_parser_free, NULL TSRMLS_CC);
+	retval.handlers = (zend_object_handlers *) &php_json_handlers_parser;
+
+	return retval;
+}
+/* }}} */
+
+#define REGISTER_PARSER_CLASS_CONST_LONG(const_name, value) \
+	zend_declare_class_constant_long(php_json_parser_ce, const_name, sizeof(const_name)-1, value TSRMLS_CC);
+
 /* {{{ MINIT */
 static PHP_MINIT_FUNCTION(json)
 {
-	zend_class_entry ce;
+	zend_class_entry ce, ce_parser;
 
 	INIT_CLASS_ENTRY(ce, "JsonSerializable", json_serializable_interface);
 	php_json_serializable_ce = zend_register_internal_interface(&ce TSRMLS_CC);
+
+	INIT_CLASS_ENTRY(ce_parser, "JsonIncrementalParser", json_functions_parser);
+	ce_parser.create_object = php_json_parser_new;
+	php_json_parser_ce = zend_register_internal_class(&ce_parser TSRMLS_CC);
+	memcpy(&php_json_handlers_parser, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+
+	REGISTER_PARSER_CLASS_CONST_LONG("JSON_PARSER_SUCCESS",  json_tokener_success);
+	REGISTER_PARSER_CLASS_CONST_LONG("JSON_PARSER_CONTINUE", json_tokener_continue);
 
 	REGISTER_LONG_CONSTANT("JSON_HEX_TAG",  PHP_JSON_HEX_TAG,  CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_HEX_AMP",  PHP_JSON_HEX_AMP,  CONST_CS | CONST_PERSISTENT);
@@ -824,7 +912,7 @@ static PHP_FUNCTION(json_encode)
 }
 /* }}} */
 
-/* {{{ proto mixed json_decode(string json [, bool assoc [, long depth]])
+/* {{{ proto mixed json_decode(string json [, bool assoc [, long depth [, long options]]])
    Decodes the JSON representation into a PHP value */
 static PHP_FUNCTION(json_decode)
 {
@@ -898,6 +986,98 @@ static PHP_FUNCTION(json_last_error_msg)
 			RETURN_STRING("Unknown error", 1);
 	}
 
+}
+/* }}} */
+
+/* {{{ proto JsonIncrementalParser::__construct([int depth])
+   Creates new JsonIncrementalParser object
+*/
+static PHP_METHOD(JsonIncrementalParser, __construct)
+{
+	long                           depth = JSON_PARSER_DEFAULT_DEPTH;
+	struct php_json_object_parser *intern;
+	zend_error_handling            error_handling;
+
+	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	zend_replace_error_handling(EH_THROW, NULL, &error_handling TSRMLS_CC);
+	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l")) {
+		zend_restore_error_handling(&error_handling TSRMLS_CC);
+		return;
+	}
+	zend_restore_error_handling(&error_handling TSRMLS_CC);
+
+	intern->obj = NULL;
+	intern->tok = json_tokener_new_ex(depth);
+	if (!intern->tok) {
+		zend_throw_exception(zend_exception_get_default(TSRMLS_C), "Can't allocate parser", 0 TSRMLS_CC);
+	}
+}
+/* }}} */
+
+/* {{{ proto long JsonIncrementalParser::getError()
+   Get current parser error
+*/
+static PHP_METHOD(JsonIncrementalParser, getError)
+{
+	struct php_json_object_parser *intern;
+
+	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+	RETURN_LONG(json_tokener_get_error(intern->tok));
+}
+/* }}} */
+
+/* {{{ proto long JsonIncrementalParser::reset()
+   Reset the parser
+*/
+static PHP_METHOD(JsonIncrementalParser, reset)
+{
+	struct php_json_object_parser *intern;
+
+	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
+	json_tokener_reset(intern->tok);
+	intern->obj = NULL;
+
+	RETURN_LONG(json_tokener_get_error(intern->tok));
+}
+/* }}} */
+
+/* {{{ proto long JsonIncrementalParser::reset()
+   Parse a json encoded string
+*/
+static PHP_METHOD(JsonIncrementalParser, parse)
+{
+	struct php_json_object_parser *intern;
+	char *str;
+	int str_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &str, &str_len) == FAILURE) {
+		return;
+	}
+
+	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+	intern->obj = json_tokener_parse_ex(intern->tok, str, str_len);
+
+	RETURN_LONG(json_tokener_get_error(intern->tok));
+}
+/* }}} */
+
+/* {{{ proto mixed JsonIncrementalParser::get([long option])
+   Get the parsed result
+*/
+static PHP_METHOD(JsonIncrementalParser, get)
+{
+	struct php_json_object_parser *intern;
+	long options = 0;
+
+	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &options) == FAILURE) {
+		return;
+	}
+
+	json_object_to_zval(intern->obj, return_value, options TSRMLS_CC);
 }
 /* }}} */
 

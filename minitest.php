@@ -58,5 +58,39 @@ echo "Obj as array1:"; var_dump(json_decode('{"One":"foo","Two":"bar"}', true));
 echo "Obj as array2:"; var_dump(json_decode('{"One":"foo","":"bar"}', true));
 echo "Object 1:     "; var_dump(json_decode('{"One":"foo","Two":"bar"}', false));
 echo "Object 2:     "; var_dump(json_decode('{"One":"foo","":"bar"}', false));
-echo "\nDone\n";
 
+if (class_exists('JsonIncrementalParser')) {
+	echo "\nJsonIncrementalParser\n";
+	$parser = new JsonIncrementalParser();
+	var_dump($parser->getError());
+	var_dump($parser->parse('"foo"'));
+	var_dump($parser->get());
+	var_dump($parser->reset());
+	var_dump($parser->get());
+	var_dump($parser->parse('["foo",'));
+	var_dump($parser->get());
+	var_dump($parser->parse('"bar"]'));
+	var_dump($parser->get());
+	var_dump($parser->parse('{"One":"foo",'));
+	var_dump($parser->parse('"Two":"bar"}'));
+	var_dump($parser->get());
+	var_dump($parser->get(JSON_OBJECT_AS_ARRAY));
+
+	$fic = fopen("minitest.json", "r");
+	if ($fic) {
+		var_dump($parser->reset());
+		do {
+			$buf = fgets($fic);
+			if ($buf) {
+				$ret=$parser->parse($buf);
+			}
+		} while ($buf && ($ret==JsonIncrementalParser::JSON_PARSER_CONTINUE));
+
+		fclose($fic);
+		var_dump($parser->get());
+	} else {
+		echo "Can't read minitest.json\n";
+	}
+}
+
+echo "\nDone\n";
