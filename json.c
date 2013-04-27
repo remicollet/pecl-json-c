@@ -589,7 +589,7 @@ static void json_encode_serializable_object(smart_str *buf, zval *val, int optio
 		zend_throw_exception_ex(NULL, 0 TSRMLS_CC, "Failed calling %s::jsonSerialize()", ce->name);
 		smart_str_appendl(buf, "null", sizeof("null") - 1);
 		return;
-    }
+	}
 
 	if (EG(exception)) {
 		/* Error already raised */
@@ -674,85 +674,85 @@ PHP_JSON_API void php_json_encode(smart_str *buf, zval *val, int options TSRMLS_
 
 static void json_object_to_zval(json_object  *new_obj, zval *return_value, int options TSRMLS_DC) /* {{{ */
 {
-    struct json_object_iterator it, itEnd;
-    json_object  *tmpobj;
-    json_type     type;
-    zval         *tmpval;
-    int           i, nb;
-    const char   *key;
+	struct json_object_iterator it, itEnd;
+	json_object  *tmpobj;
+	json_type     type;
+	zval         *tmpval;
+	int           i, nb;
+	const char   *key;
 
 	RETVAL_NULL();
 	if (new_obj) {
-        type = json_object_get_type(new_obj);
-        switch (type) {
-            case json_type_double:
-                RETVAL_DOUBLE(json_object_get_double(new_obj));
-                break;
+		type = json_object_get_type(new_obj);
+		switch (type) {
+			case json_type_double:
+				RETVAL_DOUBLE(json_object_get_double(new_obj));
+				break;
 
-            case json_type_string:
-                RETVAL_STRING(json_object_get_string(new_obj), 1);
-                break;
+			case json_type_string:
+				RETVAL_STRING(json_object_get_string(new_obj), 1);
+				break;
 
-            case json_type_int:
+			case json_type_int:
 #if SIZEOF_LONG_LONG > 4
-                RETVAL_LONG(json_object_get_int64(new_obj));
+				RETVAL_LONG(json_object_get_int64(new_obj));
 #else
-                RETVAL_LONG(json_object_get_int(new_obj));
+				RETVAL_LONG(json_object_get_int(new_obj));
 #endif
-                break;
+				break;
 
-            case json_type_boolean:
-                if (json_object_get_boolean(new_obj)) {
-                    RETVAL_BOOL(1);
-                } else {
-                    RETVAL_BOOL(0);
-                }
-                break;
+			case json_type_boolean:
+				if (json_object_get_boolean(new_obj)) {
+					RETVAL_BOOL(1);
+				} else {
+					RETVAL_BOOL(0);
+				}
+				break;
 
-            case json_type_null:
-                break;
+			case json_type_null:
+				break;
 
-            case json_type_array:
-                array_init(return_value);
-                nb = json_object_array_length(new_obj);
-                for (i=0 ; i<nb ; i++) {
-                     MAKE_STD_ZVAL(tmpval);
-                     json_object_to_zval(json_object_array_get_idx(new_obj, i), tmpval, options TSRMLS_CC);
-                     add_next_index_zval(return_value, tmpval);
-                }
-                break;
+			case json_type_array:
+				array_init(return_value);
+				nb = json_object_array_length(new_obj);
+				for (i=0 ; i<nb ; i++) {
+					MAKE_STD_ZVAL(tmpval);
+					json_object_to_zval(json_object_array_get_idx(new_obj, i), tmpval, options TSRMLS_CC);
+					add_next_index_zval(return_value, tmpval);
+				}
+				break;
 
-            case json_type_object:
-                if (options & PHP_JSON_OBJECT_AS_ARRAY) {
-                    array_init(return_value);
-                } else { /* OBJECT */
-                    object_init(return_value);
-                }
-                it = json_object_iter_begin(new_obj);
-                itEnd = json_object_iter_end(new_obj);
+			case json_type_object:
+				if (options & PHP_JSON_OBJECT_AS_ARRAY) {
+					array_init(return_value);
+				} else { /* OBJECT */
+					object_init(return_value);
+				}
+				it = json_object_iter_begin(new_obj);
+				itEnd = json_object_iter_end(new_obj);
 
-                while (!json_object_iter_equal(&it, &itEnd)) {
-                    MAKE_STD_ZVAL(tmpval);
-                    key = json_object_iter_peek_name(&it);
-                    tmpobj  = json_object_iter_peek_value(&it);
-                    json_object_to_zval(tmpobj, tmpval, options TSRMLS_CC);
+				while (!json_object_iter_equal(&it, &itEnd)) {
+					MAKE_STD_ZVAL(tmpval);
+					key = json_object_iter_peek_name(&it);
+					tmpobj  = json_object_iter_peek_value(&it);
+					json_object_to_zval(tmpobj, tmpval, options TSRMLS_CC);
 
-                    if (options & PHP_JSON_OBJECT_AS_ARRAY) {
-                        add_assoc_zval(return_value, key, tmpval);
-                    } else if (*key) {
-                        add_property_zval(return_value, key, tmpval);
-                    } else {
-                        add_property_zval(return_value, "_empty_", tmpval);
-                    }
-                    Z_DELREF_P(tmpval);
-                    json_object_iter_next(&it);
-                }
-                break;
+					if (options & PHP_JSON_OBJECT_AS_ARRAY) {
+						add_assoc_zval(return_value, key, tmpval);
+					} else if (*key) {
+						add_property_zval(return_value, key, tmpval);
+					} else {
+						add_property_zval(return_value, "_empty_", tmpval);
+					}
+					Z_DELREF_P(tmpval);
+					json_object_iter_next(&it);
+				}
+				break;
 
-            default:
-			    php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
-        }        
-    }
+			default:
+				php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
+		}
+        }
 }
 
 /* }}} */
@@ -773,23 +773,23 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 		new_obj = json_tokener_parse_ex(tok, "", -1);
 	}
 
-    if (new_obj) {
-        json_object_to_zval(new_obj, return_value, options TSRMLS_CC);
-        json_object_put(new_obj);
-    } else {
-        switch (json_tokener_get_error(tok)) {
-            case json_tokener_success:
-                break;
+	if (new_obj) {
+		json_object_to_zval(new_obj, return_value, options TSRMLS_CC);
+		json_object_put(new_obj);
+	} else {
+		switch (json_tokener_get_error(tok)) {
+			case json_tokener_success:
+				break;
 
-            case json_tokener_error_depth:
-                JSON_G(error_code) = PHP_JSON_ERROR_DEPTH;
-                break;
+			case json_tokener_error_depth:
+				JSON_G(error_code) = PHP_JSON_ERROR_DEPTH;
+				break;
 
-            default:
-                JSON_G(error_code) = PHP_JSON_ERROR_SYNTAX;
-                JSON_G(parser_code) = json_tokener_get_error(tok);
-        }
-    }
+			default:
+				JSON_G(error_code) = PHP_JSON_ERROR_SYNTAX;
+				JSON_G(parser_code) = json_tokener_get_error(tok);
+		}
+	}
 	json_tokener_free(tok);
 }
 /* }}} */
@@ -802,7 +802,7 @@ static PHP_FUNCTION(json_encode)
 	zval *parameter;
 	smart_str buf = {0};
 	long options = 0;
-    long depth = JSON_PARSER_DEFAULT_DEPTH;
+	long depth = JSON_PARSER_DEFAULT_DEPTH;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "z|ll", &parameter, &options, &depth) == FAILURE) {
 		return;
