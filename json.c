@@ -827,12 +827,10 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 
 					if (options & PHP_JSON_OBJECT_AS_ARRAY) {
 						add_assoc_zval(return_value, key, tmpval);
-					} else if (*key) {
-						add_property_zval(return_value, key, tmpval);
-					} else {
-						add_property_zval(return_value, "_empty_", tmpval);
+					} else  {
+						add_property_zval(return_value, (*key ? key : "_empty_"), tmpval);
+						Z_DELREF_P(tmpval);
 					}
-					Z_DELREF_P(tmpval);
 					json_object_iter_next(&it);
 				}
 				break;
@@ -840,7 +838,7 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 			default:
 				php_error_docref(NULL TSRMLS_CC, E_WARNING, "type '%d' not yet implemented", type);
 		}
-        }
+	}
 }
 
 /* }}} */
