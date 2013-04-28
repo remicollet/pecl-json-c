@@ -943,6 +943,10 @@ static PHP_FUNCTION(json_decode)
 		options &= ~PHP_JSON_OBJECT_AS_ARRAY;
 	}
 
+	if (options & PHP_JSON_BIGINT_AS_STRING) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "option JSON_BIGINT_AS_STRING not implemented");
+	}
+
 	php_json_decode_ex(return_value, str, str_len, options, depth TSRMLS_CC);
 }
 /* }}} */

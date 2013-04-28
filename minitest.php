@@ -58,6 +58,8 @@ echo "Obj as array1:"; var_dump(json_decode('{"One":"foo","Two":"bar"}', true));
 echo "Obj as array2:"; var_dump(json_decode('{"One":"foo","":"bar"}', true));
 echo "Object 1:     "; var_dump(json_decode('{"One":"foo","Two":"bar"}', false));
 echo "Object 2:     "; var_dump(json_decode('{"One":"foo","":"bar"}', false));
+echo "BigInt 1:     "; var_dump(json_decode("12345678901234567890"));
+echo "BigInt 2:     "; var_dump(json_decode("12345678901234567890", true, 5,  JSON_BIGINT_AS_STRING));
 
 if (class_exists('JsonIncrementalParser')) {
 	echo "\nJsonIncrementalParser\n";
