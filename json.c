@@ -77,19 +77,16 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_json_decode, 0, 0, 1)
 	ZEND_ARG_INFO(0, options)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO(arginfo_json_last_error, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_json_last_error_msg, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_json_none, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ json_functions[] */
 static const zend_function_entry json_functions[] = {
-	PHP_FE(json_encode, arginfo_json_encode)
-	PHP_FE(json_decode, arginfo_json_decode)
-	PHP_FE(json_last_error, arginfo_json_last_error)
-	PHP_FE(json_last_error_msg, arginfo_json_last_error_msg)
+	PHP_FE(json_encode,         arginfo_json_encode)
+	PHP_FE(json_decode,         arginfo_json_decode)
+	PHP_FE(json_last_error,     arginfo_json_none)
+	PHP_FE(json_last_error_msg, arginfo_json_none)
 	PHP_FE_END
 };
 /* }}} */
@@ -125,8 +122,8 @@ ZEND_END_ARG_INFO()
 
 static const zend_function_entry json_functions_parser[] = {
 	PHP_ME(JsonIncrementalParser, __construct, arginfo_parser_create, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
-	PHP_ME(JsonIncrementalParser, getError,    NULL,                  ZEND_ACC_PUBLIC)
-	PHP_ME(JsonIncrementalParser, reset,       NULL,                  ZEND_ACC_PUBLIC)
+	PHP_ME(JsonIncrementalParser, getError,    arginfo_json_none,     ZEND_ACC_PUBLIC)
+	PHP_ME(JsonIncrementalParser, reset,       arginfo_json_none,     ZEND_ACC_PUBLIC)
 	PHP_ME(JsonIncrementalParser, parse,       arginfo_parser_parse,  ZEND_ACC_PUBLIC)
 	PHP_ME(JsonIncrementalParser, parseFile,   arginfo_parser_pfile,  ZEND_ACC_PUBLIC)
 	PHP_ME(JsonIncrementalParser, get,         arginfo_parser_get,    ZEND_ACC_PUBLIC)
@@ -523,10 +520,9 @@ static void json_escape_string(smart_str *buf, char *s, int len, int options TSR
 				smart_str_append_long(buf, p);
 			} else if (type == IS_DOUBLE) {
 				if (!zend_isinf(d) && !zend_isnan(d)) {
-					char *tmp;
-					int l = spprintf(&tmp, 0, "%.*k", (int) EG(precision), d);
-					smart_str_appendl(buf, tmp, l);
-					efree(tmp);
+					char tmp[1024];
+					php_gcvt(d, EG(precision), '.', 'e', tmp);
+					smart_str_appends(buf, tmp);
 				} else {
 					JSON_G(error_code) = PHP_JSON_ERROR_INF_OR_NAN;
 					smart_str_appendc(buf, '0');
@@ -727,14 +723,12 @@ PHP_JSON_API void php_json_encode(smart_str *buf, zval *val, int options TSRMLS_
 
 		case IS_DOUBLE:
 			{
-				char *d = NULL;
-				int len;
+				char tmp[1024];
 				double dbl = Z_DVAL_P(val);
 
 				if (!zend_isinf(dbl) && !zend_isnan(dbl)) {
-					len = spprintf(&d, 0, "%.*k", (int) EG(precision), dbl);
-					smart_str_appendl(buf, d, len);
-					efree(d);
+					php_gcvt(dbl, EG(precision), '.', 'e', tmp);
+					smart_str_appends(buf, tmp);
 				} else {
 					JSON_G(error_code) = PHP_JSON_ERROR_INF_OR_NAN;
 					smart_str_appendc(buf, '0');

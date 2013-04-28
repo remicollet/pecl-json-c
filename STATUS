@@ -11,7 +11,7 @@ CWD         : /home/remi/test/json/pecl-json-c
 Extra dirs  : 
 VALGRIND    : Not used
 =====================================================================
-TIME START 2013-04-28 05:49:04
+TIME START 2013-04-28 16:56:22
 =====================================================================
 PASS json_decode() tests [tests/001.phpt] 
 PASS json_encode() tests [tests/002.phpt] 
@@ -63,7 +63,7 @@ PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass3.json) [tests/pa
 PASS json_encode() Serialization tests [tests/serialize.phpt] 
 PASS An error is thrown when an unsupported type is encoded [tests/unsupported_type_error.phpt] 
 =====================================================================
-TIME END 2013-04-28 05:49:06
+TIME END 2013-04-28 16:56:24
 
 =====================================================================
 TEST RESULT SUMMARY
