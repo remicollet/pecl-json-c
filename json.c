@@ -47,6 +47,7 @@ static PHP_METHOD(JsonIncrementalParser, getError);
 static PHP_METHOD(JsonIncrementalParser, parse);
 static PHP_METHOD(JsonIncrementalParser, reset);
 static PHP_METHOD(JsonIncrementalParser, get);
+static PHP_METHOD(JsonIncrementalParser, parseFile);
 
 static const char digits[] = "0123456789abcdef";
 
@@ -113,6 +114,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_parse, 0, 0, 1)
 	ZEND_ARG_INFO(0, json)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_pfile, 0, 0, 1)
+	ZEND_ARG_INFO(0, filename)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_get, 0, 0, 0)
 	ZEND_ARG_INFO(0, options)
 ZEND_END_ARG_INFO()
@@ -123,6 +128,7 @@ static const zend_function_entry json_functions_parser[] = {
 	PHP_ME(JsonIncrementalParser, getError,    NULL,                  ZEND_ACC_PUBLIC)
 	PHP_ME(JsonIncrementalParser, reset,       NULL,                  ZEND_ACC_PUBLIC)
 	PHP_ME(JsonIncrementalParser, parse,       arginfo_parser_parse,  ZEND_ACC_PUBLIC)
+	PHP_ME(JsonIncrementalParser, parseFile,   arginfo_parser_pfile,  ZEND_ACC_PUBLIC)
 	PHP_ME(JsonIncrementalParser, get,         arginfo_parser_get,    ZEND_ACC_PUBLIC)
 	PHP_FE_END
 };
@@ -1040,7 +1046,7 @@ static PHP_METHOD(JsonIncrementalParser, reset)
 }
 /* }}} */
 
-/* {{{ proto long JsonIncrementalParser::reset()
+/* {{{ proto long JsonIncrementalParser::parse(string json)
    Parse a json encoded string
 */
 static PHP_METHOD(JsonIncrementalParser, parse)
@@ -1076,6 +1082,48 @@ static PHP_METHOD(JsonIncrementalParser, get)
 	}
 
 	json_object_to_zval(intern->obj, return_value, options TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ proto mixed JsonIncrementalParser::get(string filename)
+   Get the parsed result
+*/
+static PHP_METHOD(JsonIncrementalParser, parseFile)
+{
+	struct php_json_object_parser *intern;
+	char          *file;
+	int           file_len, ret = json_tokener_success;
+	size_t        len;
+	char          buf[1024];
+	php_stream    *stream;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "p", &file, &file_len) == FAILURE) {
+		return;
+	}
+
+	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+	stream = php_stream_open_wrapper(file, "rb", REPORT_ERRORS, NULL);
+	if (!stream) {
+		RETURN_FALSE;
+	}
+
+	json_tokener_reset(intern->tok);
+	intern->obj = NULL;
+
+	do
+	{
+		php_stream_get_line(stream, buf, sizeof(buf), &len);
+		if (len>0) {
+			intern->obj = json_tokener_parse_ex(intern->tok, buf, len);
+			ret = json_tokener_get_error(intern->tok);
+		}
+	}
+	while (len>0 && ret==json_tokener_continue);
+
+	php_stream_close(stream);
+
+	RETURN_LONG(ret);
 }
 /* }}} */
 

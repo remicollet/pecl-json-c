@@ -76,21 +76,9 @@ if (class_exists('JsonIncrementalParser')) {
 	var_dump($parser->get());
 	var_dump($parser->get(JSON_OBJECT_AS_ARRAY));
 
-	$fic = fopen("minitest.json", "r");
-	if ($fic) {
-		var_dump($parser->reset());
-		do {
-			$buf = fgets($fic);
-			if ($buf) {
-				$ret=$parser->parse($buf);
-			}
-		} while ($buf && ($ret==JsonIncrementalParser::JSON_PARSER_CONTINUE));
-
-		fclose($fic);
-		var_dump($parser->get());
-	} else {
-		echo "Can't read minitest.json\n";
-	}
+	$txt = "/*\nTest file\n*/\n".json_encode(new Mini("foo", array("bar1", "bar2")), JSON_PRETTY_PRINT);
+	file_put_contents(__DIR__.'/minitest.json', $txt);
+	var_dump($parser->parseFile(__DIR__.'/minitest.json'));
+	var_dump($parser->get());
 }
-
 echo "\nDone\n";

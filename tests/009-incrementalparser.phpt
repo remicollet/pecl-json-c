@@ -1,5 +1,5 @@
 --TEST--
-JsonIncremantalParser simple test
+JsonIncremantalParser::parse() simple test
 --SKIPIF--
 <?php if (!extension_loaded("json")) print "skip"; ?>
 --FILE--
