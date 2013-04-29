@@ -17,13 +17,14 @@ Also provide a new incremental parser object:
 	$fic = fopen("somefile.json", "r");
 	do {
 		$buf = fgets($fic);
-		$ret=$parser->parse($buf);
+		$ret = $parser->parse($buf);
 	} while ($buf && ($ret==JsonIncrementalParser::JSON_PARSER_CONTINUE));
 	$result = $parser->get();
 
 or, even simpler:
 
-	$result = $parser->parseFile("somefile.json");
+	$ret = $parser->parseFile("somefile.json");
+	$result = $parser->get();
 
 
 Work in progress.
