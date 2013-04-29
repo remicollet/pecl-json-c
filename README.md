@@ -20,7 +20,9 @@ Also provide a new incremental parser object:
 		$ret=$parser->parse($buf);
 	} while ($buf && ($ret==JsonIncrementalParser::JSON_PARSER_CONTINUE));
 	$result = $parser->get();
-or
+
+or, even simpler:
+
 	$result = $parser->parseFile("somefile.json");
 
 
