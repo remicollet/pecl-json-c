@@ -87,6 +87,7 @@ extern zend_class_entry *php_json_serializable_ce;
 /* json_decode() options */
 #define PHP_JSON_OBJECT_AS_ARRAY	(1<<0)
 #define PHP_JSON_BIGINT_AS_STRING	(1<<1)
+#define PHP_JSON_PARSER_STRICT		(1<<2)
 
 static inline void php_json_decode(zval *return_value, char *str, int str_len, zend_bool assoc, long depth TSRMLS_DC)
 {

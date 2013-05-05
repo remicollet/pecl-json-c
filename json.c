@@ -59,6 +59,7 @@ struct php_json_object_parser {
 	zend_object     zo;
 	json_tokener   *tok;
 	json_object    *obj;
+	int             options;
 };
 
 ZEND_DECLARE_MODULE_GLOBALS(json)
@@ -105,6 +106,7 @@ static const zend_function_entry json_serializable_interface[] = {
 /* {{{ JsonIncrementalParser methods */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_create, 0, 0, 0)
 	ZEND_ARG_INFO(0, depth)
+	ZEND_ARG_INFO(0, options)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_parser_parse, 0, 0, 1)
@@ -185,9 +187,11 @@ static PHP_MINIT_FUNCTION(json)
 	php_json_parser_ce = zend_register_internal_class(&ce_parser TSRMLS_CC);
 	memcpy(&php_json_handlers_parser, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
 
+	/* Incremental parser return value */
 	REGISTER_PARSER_CLASS_CONST_LONG("JSON_PARSER_SUCCESS",  json_tokener_success);
 	REGISTER_PARSER_CLASS_CONST_LONG("JSON_PARSER_CONTINUE", json_tokener_continue);
 
+	/* encoder options */
 	REGISTER_LONG_CONSTANT("JSON_HEX_TAG",  PHP_JSON_HEX_TAG,  CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_HEX_AMP",  PHP_JSON_HEX_AMP,  CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_HEX_APOS", PHP_JSON_HEX_APOS, CONST_CS | CONST_PERSISTENT);
@@ -199,18 +203,27 @@ static PHP_MINIT_FUNCTION(json)
 	REGISTER_LONG_CONSTANT("JSON_UNESCAPED_UNICODE", PHP_JSON_UNESCAPED_UNICODE, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_PARTIAL_OUTPUT_ON_ERROR", PHP_JSON_PARTIAL_OUTPUT_ON_ERROR, CONST_CS | CONST_PERSISTENT);
 
-	REGISTER_LONG_CONSTANT("JSON_ERROR_NONE", PHP_JSON_ERROR_NONE, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("JSON_ERROR_DEPTH", PHP_JSON_ERROR_DEPTH, CONST_CS | CONST_PERSISTENT);
+	/* old parser error codes - kept for compatibility */
 	REGISTER_LONG_CONSTANT("JSON_ERROR_STATE_MISMATCH", PHP_JSON_ERROR_STATE_MISMATCH, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_ERROR_CTRL_CHAR", PHP_JSON_ERROR_CTRL_CHAR, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("JSON_ERROR_SYNTAX", PHP_JSON_ERROR_SYNTAX, CONST_CS | CONST_PERSISTENT);
+
+	/* encoder error codes */
 	REGISTER_LONG_CONSTANT("JSON_ERROR_UTF8", PHP_JSON_ERROR_UTF8, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_ERROR_RECURSION", PHP_JSON_ERROR_RECURSION, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_ERROR_INF_OR_NAN", PHP_JSON_ERROR_INF_OR_NAN, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_ERROR_UNSUPPORTED_TYPE", PHP_JSON_ERROR_UNSUPPORTED_TYPE, CONST_CS | CONST_PERSISTENT);
 
-	REGISTER_LONG_CONSTANT("JSON_OBJECT_AS_ARRAY",		PHP_JSON_OBJECT_AS_ARRAY,		CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("JSON_BIGINT_AS_STRING",		PHP_JSON_BIGINT_AS_STRING,		CONST_CS | CONST_PERSISTENT);
+	/* parser error codes */
+	REGISTER_LONG_CONSTANT("JSON_ERROR_NONE", PHP_JSON_ERROR_NONE, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("JSON_ERROR_DEPTH", PHP_JSON_ERROR_DEPTH, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("JSON_ERROR_SYNTAX", PHP_JSON_ERROR_SYNTAX, CONST_CS | CONST_PERSISTENT);
+
+	/* parser option */
+	REGISTER_LONG_CONSTANT("JSON_OBJECT_AS_ARRAY",   PHP_JSON_OBJECT_AS_ARRAY,    CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("JSON_PARSER_STRICT",     PHP_JSON_PARSER_STRICT,      CONST_CS | CONST_PERSISTENT);
+
+	/* Not yet implemented */
+	REGISTER_LONG_CONSTANT("JSON_BIGINT_AS_STRING",  PHP_JSON_BIGINT_AS_STRING,   CONST_CS | CONST_PERSISTENT);
 
 	return SUCCESS;
 }
@@ -854,6 +867,9 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 	if (!tok) {
 		return;
 	}
+	if (options & PHP_JSON_PARSER_STRICT) {
+		json_tokener_set_flags(tok, JSON_TOKENER_STRICT);
+	}
 	new_obj = json_tokener_parse_ex(tok, str, str_len);
 	if (json_tokener_get_error(tok)==json_tokener_continue) {
 		new_obj = json_tokener_parse_ex(tok, "", -1);
@@ -991,28 +1007,33 @@ static PHP_FUNCTION(json_last_error_msg)
 }
 /* }}} */
 
-/* {{{ proto JsonIncrementalParser::__construct([int depth])
+/* {{{ proto JsonIncrementalParser::__construct([int depth [, int options]])
    Creates new JsonIncrementalParser object
 */
 static PHP_METHOD(JsonIncrementalParser, __construct)
 {
-	long                           depth = JSON_PARSER_DEFAULT_DEPTH;
+	long                           depth = JSON_PARSER_DEFAULT_DEPTH, options = 0;
 	struct php_json_object_parser *intern;
 	zend_error_handling            error_handling;
 
 	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
 	zend_replace_error_handling(EH_THROW, NULL, &error_handling TSRMLS_CC);
-	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l")) {
+	if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|ll", &depth, &options)) {
 		zend_restore_error_handling(&error_handling TSRMLS_CC);
 		return;
 	}
 	zend_restore_error_handling(&error_handling TSRMLS_CC);
 
+	intern->options = (int)options;
 	intern->obj = NULL;
 	intern->tok = json_tokener_new_ex(depth);
 	if (!intern->tok) {
 		zend_throw_exception(zend_exception_get_default(TSRMLS_C), "Can't allocate parser", 0 TSRMLS_CC);
 	}
+	if (options & PHP_JSON_PARSER_STRICT) {
+		json_tokener_set_flags(intern->tok, JSON_TOKENER_STRICT);
+	}
+
 }
 /* }}} */
 
@@ -1071,9 +1092,12 @@ static PHP_METHOD(JsonIncrementalParser, parse)
 static PHP_METHOD(JsonIncrementalParser, get)
 {
 	struct php_json_object_parser *intern;
-	long options = 0;
+	long options;
 
 	intern = (struct php_json_object_parser *)zend_object_store_get_object(getThis() TSRMLS_CC);
+
+	/* Default options from construct */
+	options = intern->options;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|l", &options) == FAILURE) {
 		return;
