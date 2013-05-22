@@ -27,4 +27,7 @@ or, even simpler:
 	$result = $parser->get();
 
 
-Work in progress.
+
+“The world will not be destroyed by those who do evil,
+ but by those who watch them without doing anything”
+                                -- Albert Einstein
