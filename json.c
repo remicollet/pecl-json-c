@@ -220,7 +220,7 @@ static PHP_MINIT_FUNCTION(json)
 
 	/* parser option */
 	REGISTER_LONG_CONSTANT("JSON_OBJECT_AS_ARRAY",   PHP_JSON_OBJECT_AS_ARRAY,    CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("JSON_PARSER_STRICT",     PHP_JSON_PARSER_STRICT,      CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("JSON_PARSER_NOTSTRICT",  PHP_JSON_PARSER_NOTSTRICT,   CONST_CS | CONST_PERSISTENT);
 
 	/* Not yet implemented */
 	REGISTER_LONG_CONSTANT("JSON_BIGINT_AS_STRING",  PHP_JSON_BIGINT_AS_STRING,   CONST_CS | CONST_PERSISTENT);
@@ -867,7 +867,7 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 	if (!tok) {
 		return;
 	}
-	if (options & PHP_JSON_PARSER_STRICT) {
+	if (!(options & PHP_JSON_PARSER_NOTSTRICT)) {
 		json_tokener_set_flags(tok, JSON_TOKENER_STRICT);
 	}
 	new_obj = json_tokener_parse_ex(tok, str, str_len);
@@ -1030,7 +1030,7 @@ static PHP_METHOD(JsonIncrementalParser, __construct)
 	if (!intern->tok) {
 		zend_throw_exception(zend_exception_get_default(TSRMLS_C), "Can't allocate parser", 0 TSRMLS_CC);
 	}
-	if (options & PHP_JSON_PARSER_STRICT) {
+	if (!(options & PHP_JSON_PARSER_NOTSTRICT)) {
 		json_tokener_set_flags(intern->tok, JSON_TOKENER_STRICT);
 	}
 
