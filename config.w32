@@ -7,8 +7,9 @@ if (PHP_JSONC != "no") {
 		EXTENSION("jsonc", "json.c");
 
 		AC_DEFINE("HAVE_JSONC", 1, "Have jsonc support");
+		PHP_INSTALL_HEADERS("ext/json", "php_json.h");
 
-		ADD_FLAG("CFLAGS_JSONC", "/D JSON_EXPORTS=1");
+		ADD_FLAG("CFLAGS_JSONC", "/D JSON_EXPORTS=1 /D COMPILE_DL_JSON");
 	} else {
 		WARNING('jsonc not enabled, headers or libraries not found');
 	}
