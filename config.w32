@@ -1,0 +1,13 @@
+
+ARG_WITH("jsonc", "enable jsonc support", "no");
+
+if (PHP_JSONC != "no") {
+	if (CHECK_HEADER_ADD_INCLUDE('json-c/json.h', 'CFLAGS_JSONC', null, null, "jsonc") &&
+		CHECK_LIB("json.lib;json_a.lib", "jsonc", PHP_JSONC)) {
+		EXTENSION("jsonc", "json.c");
+		AC_DEFINE("HAVE_JSONC", 1, "Have jsonc support");
+	} else {
+		WARNING('jsonc not enabled, headers or libraries not found');
+	}
+}
+
