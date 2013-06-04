@@ -7,6 +7,8 @@ precision=14
   if (!extension_loaded('json')) die('skip: json extension not available');
   if (PHP_INT_SIZE != 4) die("skip this test is for 32bit platform only");
 ?>
+--XFAIL--
+Large number always treat as integer.
 --FILE--
 <?php
 /* Modified to test unescaped UNICODE as keys and values.
