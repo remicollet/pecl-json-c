@@ -40,7 +40,7 @@ if test "$PHP_JSON" != "no"; then
 		PHP_EVAL_INCLINE($LIBJSON_INCLUDE)
 		PHP_EVAL_LIBLINE($LIBJSON_LIBRARY, JSON_SHARED_LIBADD)
 
-		PHP_NEW_EXTENSION(json, json.c, $ext_shared)
+		PHP_NEW_EXTENSION(jsonc, json.c, $ext_shared)
 	else
 		AC_MSG_CHECKING([for working sscanf])
 		AC_TRY_RUN([
@@ -71,7 +71,7 @@ return (sscanf("1234567890123456789012345","%ld",&i)==1 && errno==ERANGE && i==I
 							json-c/json_util.c \
 							json-c/linkhash.c \
 							json-c/printbuf.c"
-		PHP_NEW_EXTENSION(json, json.c $PHP_LIBJSON_SOURCES, $ext_shared)
+		PHP_NEW_EXTENSION(jsonc, json.c $PHP_LIBJSON_SOURCES, $ext_shared)
 	fi
 
 	PHP_INSTALL_HEADERS([ext/json], [php_json.h])
