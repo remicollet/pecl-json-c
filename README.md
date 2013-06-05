@@ -26,7 +26,15 @@ or, even simpler:
 	$ret = $parser->parseFile("somefile.json");
 	$result = $parser->get();
 
+Debian DEB available in unstable for PHP 5.5
+- http://liorkaplan.wordpress.com/2013/06/01/bye-bye-non-free-php-json-extension/
 
+Fedora RPM are available in remi repo
+- http://blog.famillecollet.com/post/2013/06/04/php-pecl-json-1.3.0-en
+
+Windows build are available
+- http://windows.php.net/downloads/pecl/releases/jsonc/
+- http://windows.php.net/downloads/pecl/deps/
 
 > The world will not be destroyed by those who do evil,
 > but by those who watch them without doing anything.
