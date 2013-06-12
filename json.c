@@ -28,7 +28,7 @@
 #include "ext/standard/html.h"
 #include "ext/standard/php_smart_str.h"
 #include "php_json.h"
-#ifdef LIBJSON_VERSION
+#ifdef HAVE_LIBJSON
 #include <json.h>
 #else
 #include <json-c/json.h>
@@ -271,7 +271,7 @@ static PHP_MINFO_FUNCTION(json)
 	php_info_print_table_start();
 	php_info_print_table_row(2, "json support", "enabled");
 	php_info_print_table_row(2, "json version", PHP_JSON_VERSION);
-#ifdef LIBJSON_VERSION
+#ifdef HAVE_LIBJSON
 	php_info_print_table_row(2, "JSON-C headers version", JSON_C_VERSION);
 	php_info_print_table_row(2, "JSON-C library version", json_c_version());
 #else

@@ -37,7 +37,7 @@ if test "$PHP_JSON" != "no"; then
 
 		PHP_CHECK_LIBRARY(json-c, json_tokener_new_ex,
 		[
-			AC_DEFINE_UNQUOTED(LIBJSON_VERSION, "$LIBJSON_VERSION", [system json-c version])
+			AC_DEFINE_UNQUOTED(HAVE_LIBJSON, 1, [use system libjson-c])
 		],[
 			AC_MSG_ERROR([Sorry, Incompatible json-c library, requires version >= 0.11])
 		],[

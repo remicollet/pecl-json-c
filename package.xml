@@ -35,6 +35,7 @@ Support for JSON (JavaScript Object Notation) serialization.
  <notes>
 - windows build support (thanks to weltling)
 - build as json.so or jsonc.so (--with-jsonc option)
+- rename LIBJSON_VERSION to HAVE_LIBJSON (internal only)
  </notes>
  <contents>
   <dir name="/">

@@ -9,7 +9,7 @@ if (PHP_JSONC != "no") {
 		AC_DEFINE("HAVE_JSONC", 1, "Have jsonc support");
 		PHP_INSTALL_HEADERS("ext/json", "php_json.h");
 
-		ADD_FLAG("CFLAGS_JSONC", "/D LIBJSON_VERSION");
+		ADD_FLAG("CFLAGS_JSONC", "/D HAVE_LIBJSON");
 		/* Cheat so the ext is 'json' internally, despite the filename is jsonc */
 		ADD_FLAG("CFLAGS_JSONC", "/D JSON_EXPORTS=1 /D COMPILE_DL_JSON");
 	} else {
