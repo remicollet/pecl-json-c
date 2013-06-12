@@ -8,7 +8,8 @@ Should be a drop-in alternative to PHP json extension.
 json_encode is the same than current PHP one.
 
 json_decode use the json-c library and is mostly compatible.
-- integer are always parse as integer (never float or string)
+- > 64 bits integer are always parsed as integer (never float or string)
+- 33 to 64 bits bits integer are parsed as float (or string) on 32 bits build
 - comments are allowed in json string/files
 
 Also provide a new incremental parser object:
