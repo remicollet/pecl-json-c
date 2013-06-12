@@ -11,10 +11,6 @@ PHP_ARG_WITH(jsonc, whether to rename module file to jsonc,
 PHP_ARG_WITH(libjson, libjson,
 [  --with-libjson          JSON: use system json-c], no, no)
 
-if test "$PHP_JSONC" != "no"; then
-	PHP_JSON=$PHP_JSONC
-fi
-
 if test "$PHP_JSON" != "no"; then
 	AC_DEFINE([HAVE_JSON], 1 ,[whether to enable JavaScript Object Serialization support])
 	AC_HEADER_STDC
