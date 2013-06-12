@@ -11,7 +11,7 @@ CWD         : /work/GIT/pecl-json-c
 Extra dirs  : 
 VALGRIND    : Not used
 =====================================================================
-TIME START 2013-06-12 10:51:25
+TIME START 2013-06-12 15:38:10
 =====================================================================
 PASS json_decode() tests [tests/001.phpt] 
 PASS json_encode() tests [tests/002.phpt] 
@@ -19,7 +19,9 @@ PASS json_encode() & endless loop - 1 [tests/003.phpt]
 PASS json_encode() & endless loop - 2 [tests/004.phpt] 
 PASS json_encode() & endless loop - 3 [tests/005.phpt] 
 PASS json_encode() & extended encoding [tests/006.phpt] 
+PASS json_last_error() tests [tests/007-jsonc.phpt] 
 XFAIL json_last_error() tests [tests/007.phpt]   XFAIL REASON: Different parser, so different error codes.
+PASS json_decode() with large integers [tests/008-jsonc.phpt] 
 XFAIL json_decode() with large integers [tests/008.phpt]   XFAIL REASON: Large number always treat as integer.
 PASS JsonIncremantalParser::parse() simple test [tests/009-incrementalparser.phpt] 
 PASS JsonIncremantalParser::parseFile() test [tests/010-incrementalparserfile.phpt] 
@@ -29,6 +31,7 @@ PASS Bug #41067 (json_encode() problem with UTF-16 input) [tests/bug41067.phpt]
 PASS Bug #41403 (json_decode cannot decode floats if localeconv decimal_point is not '.') [tests/bug41403.phpt] 
 PASS Bug #41504 (json_decode() converts empty array keys to "_empty_") [tests/bug41504.phpt] 
 PASS Bug #41567 (json_encode() double conversion is inconsistent with PHP) [tests/bug41567.phpt] 
+PASS Bug #42090 (json_decode causes segmentation fault) [tests/bug42090-jsonc.phpt] 
 XFAIL Bug #42090 (json_decode causes segmentation fault) [tests/bug42090.phpt]   XFAIL REASON: New parser is less strict, produce different result, but don't crash.
 PASS Bug #42785 (Incorrect formatting of double values with non-english locales) [tests/bug42785.phpt] 
 PASS Bug #43941 (json_encode() invalid UTF-8) [tests/bug43941.phpt] 
@@ -44,6 +47,7 @@ PASS Bug #61537 (json_encode() incorrectly truncates/discards information) [test
 PASS Bug #61978 (Object recursion not detected for classes that implement JsonSerializable) [tests/bug61978.phpt] 
 PASS FR #62369 (Segfault on json_encode(deeply_nested_array) [tests/bug62369.phpt] 
 PASS json_decode() with max recursion depth [tests/depth.phpt] 
+PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/fail*.json) [tests/fail001-jsonc.phpt] 
 XFAIL JSON (http://www.crockford.com/JSON/JSON_checker/test/fail*.json) [tests/fail001.phpt]   XFAIL REASON: New parser is less strict, produce different result, but don't crash.
 PASS An error is thrown when INF or NaN are encoded [tests/inf_nan_error.phpt] 
 PASS Test json_decode() function : basic functionality [tests/json_decode_basic.phpt] 
@@ -63,7 +67,7 @@ PASS JSON (http://www.crockford.com/JSON/JSON_checker/test/pass3.json) [tests/pa
 PASS json_encode() Serialization tests [tests/serialize.phpt] 
 PASS An error is thrown when an unsupported type is encoded [tests/unsupported_type_error.phpt] 
 =====================================================================
-TIME END 2013-06-12 10:51:26
+TIME END 2013-06-12 15:38:12
 
 =====================================================================
 TEST RESULT SUMMARY
@@ -72,14 +76,14 @@ Exts skipped    :    0
 Exts tested     :   17
 ---------------------------------------------------------------------
 
-Number of tests :   49                48
-Tests skipped   :    1 (  2.0%) --------
+Number of tests :   53                52
+Tests skipped   :    1 (  1.9%) --------
 Tests warned    :    0 (  0.0%) (  0.0%)
 Tests failed    :    0 (  0.0%) (  0.0%)
-Expected fail   :    4 (  8.2%) (  8.3%)
-Tests passed    :   44 ( 89.8%) ( 91.7%)
+Expected fail   :    4 (  7.5%) (  7.7%)
+Tests passed    :   48 ( 90.6%) ( 92.3%)
 ---------------------------------------------------------------------
-Time taken      :    1 seconds
+Time taken      :    2 seconds
 =====================================================================
 
 =====================================================================
