@@ -33,7 +33,8 @@ Support for JSON (JavaScript Object Notation) serialization.
  </stability>
  <license>PHP 3.01</license>
  <notes>
--
+- windows build support (thanks to weltling)
+- build as json.so or jsonc.so (--with-jsonc option)
  </notes>
  <contents>
   <dir name="/">

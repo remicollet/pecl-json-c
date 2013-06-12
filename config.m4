@@ -3,10 +3,17 @@ dnl $Id$
 dnl
 
 PHP_ARG_ENABLE(json, whether to enable JavaScript Object Serialization support,
-[  --disable-json          Disable JavaScript Object Serialization support], yes)
+[  --disable-json          Disable JavaScript Object Serialization support (json.so)], yes)
+
+PHP_ARG_WITH(jsonc, whether to rename module file to jsonc,
+[  --with-jsonc            JSON: rename module file to jsonc.so], no, no)
 
 PHP_ARG_WITH(libjson, libjson,
 [  --with-libjson          JSON: use system json-c], no, no)
+
+if test "$PHP_JSONC" != "no"; then
+	PHP_JSON=$PHP_JSONC
+fi
 
 if test "$PHP_JSON" != "no"; then
 	AC_DEFINE([HAVE_JSON], 1 ,[whether to enable JavaScript Object Serialization support])
@@ -39,8 +46,7 @@ if test "$PHP_JSON" != "no"; then
 
 		PHP_EVAL_INCLINE($LIBJSON_INCLUDE)
 		PHP_EVAL_LIBLINE($LIBJSON_LIBRARY, JSONC_SHARED_LIBADD)
-
-		PHP_NEW_EXTENSION(jsonc, json.c, $ext_shared)
+		PHP_EVAL_LIBLINE($LIBJSON_LIBRARY, JSON_SHARED_LIBADD)
 	else
 		AC_MSG_CHECKING([for working sscanf])
 		AC_TRY_RUN([
@@ -71,9 +77,18 @@ return (sscanf("1234567890123456789012345","%ld",&i)==1 && errno==ERANGE && i==I
 							json-c/json_util.c \
 							json-c/linkhash.c \
 							json-c/printbuf.c"
+	fi
+
+	AC_MSG_CHECKING(JSON extension name:)
+	if test "$PHP_JSONC" != "no"; then
+		AC_MSG_RESULT(jsonc)
 		PHP_NEW_EXTENSION(jsonc, json.c $PHP_LIBJSON_SOURCES, $ext_shared)
+		PHP_SUBST(JSONC_SHARED_LIBADD)
+	else
+		AC_MSG_RESULT(json)
+		PHP_NEW_EXTENSION(json, json.c $PHP_LIBJSON_SOURCES, $ext_shared)
+		PHP_SUBST(JSON_SHARED_LIBADD)
 	fi
 
 	PHP_INSTALL_HEADERS([ext/json], [php_json.h])
-	PHP_SUBST(JSONC_SHARED_LIBADD)
 fi
