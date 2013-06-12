@@ -8,6 +8,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <summary>JavaScript Object Notation</summary>
  <description>
 Support for JSON (JavaScript Object Notation) serialization.
+This is a drop-in alternative to PHP standard json extension.
  </description>
  <lead>
   <name>Remi Collet</name>
@@ -21,10 +22,10 @@ Support for JSON (JavaScript Object Notation) serialization.
   <email>omar@php.net</email>
   <active>no</active>
  </lead>
- <date>2013-06-04</date>
- <time>07:10:00</time>
+ <date>2013-06-12</date>
+ <time>12:50:00</time>
  <version>
-  <release>1.3.1dev</release>
+  <release>1.3.1</release>
   <api>1.3.0</api>
  </version>
  <stability>
@@ -351,6 +352,24 @@ Version 1.3.0 is Major rewrite which use the use json-c library 0.11:
 - json_decode use json-c parser
 - add JsonIncrementalParser class
 - temporarily rename as jsonc
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.1</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>stable</api>
+   </stability>
+    <date>2013-06-12</date>
+   <license>PHP 3.01</license>
+   <notes>
+- windows build support (thanks to weltling)
+- build as json.so or jsonc.so (--with-jsonc option)
+- rename LIBJSON_VERSION to HAVE_LIBJSON (internal only)
+- parse 64 bits integer as float, or string, on 32 bits build
    </notes>
   </release>
  </changelog>
