@@ -795,10 +795,19 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 				break;
 
 			case json_type_int:
-#if SIZEOF_LONG_LONG > 4
+#if SIZEOF_LONG > 4
 				RETVAL_LONG(json_object_get_int64(new_obj));
 #else
-				RETVAL_LONG(json_object_get_int(new_obj));
+				if (json_object_get_int64(new_obj) == (int64_t)json_object_get_int(new_obj)) {
+					RETVAL_LONG(json_object_get_int(new_obj));
+
+				} else if (options & PHP_JSON_BIGINT_AS_STRING) {
+					RETVAL_STRING(json_object_get_string(new_obj), 1);
+
+				} else {
+					RETVAL_DOUBLE(json_object_get_double(new_obj));
+				}
+
 #endif
 				break;
 
@@ -953,9 +962,11 @@ static PHP_FUNCTION(json_decode)
 		options &= ~PHP_JSON_OBJECT_AS_ARRAY;
 	}
 
+#if SIZEOF_LONG > 4
 	if (options & PHP_JSON_BIGINT_AS_STRING) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "option JSON_BIGINT_AS_STRING not implemented");
 	}
+#endif
 
 	php_json_decode_ex(return_value, str, str_len, options, depth TSRMLS_CC);
 }

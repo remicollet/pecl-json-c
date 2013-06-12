@@ -36,6 +36,7 @@ Support for JSON (JavaScript Object Notation) serialization.
 - windows build support (thanks to weltling)
 - build as json.so or jsonc.so (--with-jsonc option)
 - rename LIBJSON_VERSION to HAVE_LIBJSON (internal only)
+- parse 64 bits integer as float, or string, on 32 bits build
  </notes>
  <contents>
   <dir name="/">
