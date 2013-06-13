@@ -123,15 +123,9 @@ AS ARRAY
 NULL
 Testing: {"Numbers cannot have leading zeroes": 013}
 AS OBJECT
-object(stdClass)#1 (1) {
-  ["Numbers cannot have leading zeroes"]=>
-  int(13)
-}
+NULL
 AS ARRAY
-array(1) {
-  ["Numbers cannot have leading zeroes"]=>
-  int(13)
-}
+NULL
 Testing: {"Numbers cannot be hex": 0x14}
 AS OBJECT
 NULL

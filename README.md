@@ -37,6 +37,10 @@ Windows build are available
 - http://windows.php.net/downloads/pecl/releases/jsonc/
 - http://windows.php.net/downloads/pecl/deps/
 
+Pending PR in upstream json-c library
+- number must not have leading zeroes
+  https://github.com/json-c/json-c/pull/90
+
 > The world will not be destroyed by those who do evil,
 > but by those who watch them without doing anything.
 > -- Albert Einstein
