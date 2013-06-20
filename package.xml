@@ -41,6 +41,7 @@ This is a drop-in alternative to PHP standard json extension.
    <file name="CREDITS" role="doc" />
    <file name="LICENSE" role="doc" />
    <file name="README.md" role="doc" />
+   <file name="INSTALL" role="doc" />
    <file name="config.m4" role="src" />
    <file name="json.c" role="src" />
    <file name="php_json.h" role="src" />
