@@ -12,6 +12,7 @@ PHP_ARG_WITH(libjson, libjson,
 [  --with-libjson          JSON: use system json-c], no, no)
 
 if test "$PHP_JSON" != "no"; then
+	AC_GNU_SOURCE
 	AC_DEFINE([HAVE_JSON], 1 ,[whether to enable JavaScript Object Serialization support])
 	AC_HEADER_STDC
 
