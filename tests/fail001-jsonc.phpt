@@ -2,7 +2,10 @@
 JSON (http://www.crockford.com/JSON/JSON_checker/test/fail*.json)
 --SKIPIF--
 <?php
-  if (!extension_loaded('json')) die('skip: json extension not available');
+  if (!extension_loaded('json'))
+    die('skip: json extension not available');
+  if (!JSON_C_BUNDLED && version_compare(JSON_C_VERSION, "0.11", "le"))
+    die('skip: need json-c library > 0.11')
 ?>
 --FILE--
 <?php
