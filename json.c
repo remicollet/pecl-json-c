@@ -225,6 +225,15 @@ static PHP_MINIT_FUNCTION(json)
 	/* Not yet implemented */
 	REGISTER_LONG_CONSTANT("JSON_BIGINT_AS_STRING",  PHP_JSON_BIGINT_AS_STRING,   CONST_CS | CONST_PERSISTENT);
 
+	/* json-c library information */
+#ifdef HAVE_LIBJSON
+	REGISTER_LONG_CONSTANT("JSON_C_BUNDLED",         0,                           CONST_CS | CONST_PERSISTENT);
+	REGISTER_STRING_CONSTANT("JSON_C_VERSION",       json_c_version(),            CONST_CS | CONST_PERSISTENT);
+#else
+	REGISTER_LONG_CONSTANT("JSON_C_BUNDLED",         1,                           CONST_CS | CONST_PERSISTENT);
+	REGISTER_STRING_CONSTANT("JSON_C_VERSION",       JSON_C_VERSION,              CONST_CS | CONST_PERSISTENT);
+#endif
+
 	return SUCCESS;
 }
 /* }}} */
@@ -275,7 +284,7 @@ static PHP_MINFO_FUNCTION(json)
 	php_info_print_table_row(2, "JSON-C headers version", JSON_C_VERSION);
 	php_info_print_table_row(2, "JSON-C library version", json_c_version());
 #else
-	php_info_print_table_row(2, "JSON-C version", "0.11 (bundled)");
+	php_info_print_table_row(2, "JSON-C version (bundled)", JSON_C_VERSION);
 #endif
 	php_info_print_table_end();
 }

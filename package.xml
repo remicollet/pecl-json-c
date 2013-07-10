@@ -35,6 +35,7 @@ This is a drop-in alternative to PHP standard json extension.
  <license>PHP 3.01</license>
  <notes>
 - number must not have leading zeroes (json-c pr #90)
+- add JSON_C_BUNDLED and JSON_C_VERSION constants
  </notes>
  <contents>
   <dir name="/">
