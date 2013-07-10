@@ -202,6 +202,8 @@ static PHP_MINIT_FUNCTION(json)
 	REGISTER_LONG_CONSTANT("JSON_PRETTY_PRINT", PHP_JSON_PRETTY_PRINT, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_UNESCAPED_UNICODE", PHP_JSON_UNESCAPED_UNICODE, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_PARTIAL_OUTPUT_ON_ERROR", PHP_JSON_PARTIAL_OUTPUT_ON_ERROR, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("JSON_NOTUTF8_SUBSTITUTE", PHP_JSON_NOTUTF8_SUBSTITUTE, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("JSON_NOTUTF8_IGNORE", PHP_JSON_NOTUTF8_IGNORE, CONST_CS | CONST_PERSISTENT);
 
 	/* old parser error codes - kept for compatibility */
 	REGISTER_LONG_CONSTANT("JSON_ERROR_STATE_MISMATCH", PHP_JSON_ERROR_STATE_MISMATCH, CONST_CS | CONST_PERSISTENT);
@@ -482,7 +484,7 @@ static void json_encode_array(smart_str *buf, zval **val, int options TSRMLS_DC)
 /* }}} */
 
 
-static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len) /* {{{ */
+static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len, int options) /* {{{ */
 {
 	size_t pos = 0, us;
 	int j, status;
@@ -492,7 +494,16 @@ static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len) /* {{
 		for (j=0 ; pos < len ; j++) {
 			us = php_next_utf8_char((const unsigned char *)utf8, len, &pos, &status);
 			if (status != SUCCESS) {
-				return -1;
+				if (options & PHP_JSON_NOTUTF8_IGNORE) {
+					/* ignore this invalid character */
+					j--;
+					continue;
+				} else if (options & PHP_JSON_NOTUTF8_SUBSTITUTE) {
+					/* Unicode Character 'REPLACEMENT CHARACTER' (U+FFFD) */
+					us = 0xfffd;
+				} else {
+					return -1;
+				}
 			}
 			/* From http://en.wikipedia.org/wiki/UTF16 */
 			if (us >= 0x10000) {
@@ -504,6 +515,9 @@ static int json_utf8_to_utf16(unsigned short *utf16, char utf8[], int len) /* {{
 			}
 		}
 	} else {
+		if (options & PHP_JSON_NOTUTF8_IGNORE) {
+			return len;
+		}
 		/* Only check if utf8 string is valid, and compute utf16 lenght */
 		for (j=0 ; pos < len ; j++) {
 			us = php_next_utf8_char((const unsigned char *)utf8, len, &pos, &status);
@@ -556,7 +570,7 @@ static void json_escape_string(smart_str *buf, char *s, int len, int options TSR
 	}
 
 	utf16 = (options & PHP_JSON_UNESCAPED_UNICODE) ? NULL : (unsigned short *) safe_emalloc(len, sizeof(unsigned short), 0);
-	ulen = json_utf8_to_utf16(utf16, s, len);
+	ulen = json_utf8_to_utf16(utf16, s, len, options);
 	if (ulen <= 0) {
 		if (utf16) {
 			efree(utf16);

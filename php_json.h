@@ -79,6 +79,8 @@ extern zend_class_entry *php_json_serializable_ce;
 #define PHP_JSON_PRETTY_PRINT	(1<<7)
 #define PHP_JSON_UNESCAPED_UNICODE	(1<<8)
 #define PHP_JSON_PARTIAL_OUTPUT_ON_ERROR (1<<9)
+#define PHP_JSON_NOTUTF8_SUBSTITUTE (1<<10)
+#define PHP_JSON_NOTUTF8_IGNORE (1<<11)
 
 /* Internal flags */
 #define PHP_JSON_OUTPUT_ARRAY	0
