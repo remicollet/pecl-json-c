@@ -30,6 +30,9 @@ or, even simpler:
 Debian DEB available in unstable for PHP 5.5
 - http://packages.debian.org/sid/php5-json
 
+Fedora 19 RPM are available in official repo
+- https://apps.fedoraproject.org/packages/php-pecl-jsonc
+
 Fedora RPM are available in remi repo
 - http://blog.famillecollet.com/post/2013/06/04/php-pecl-json-1.3.0-en
 
