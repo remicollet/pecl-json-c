@@ -35,6 +35,7 @@ This is a drop-in alternative to PHP standard json extension.
  <license>PHP 3.01</license>
  <notes>
 - number must not have leading zeroes (json-c pr #90)
+- string must be double-quoted (json-c PR #94)
 - add JSON_C_BUNDLED and JSON_C_VERSION constants
  </notes>
  <contents>
@@ -82,8 +83,11 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="005.phpt" role="test" />
     <file name="006.phpt" role="test" />
     <file name="007.phpt" role="test" />
+    <file name="007-jsonc.phpt" role="test" />
     <file name="008.phpt" role="test" />
+    <file name="008-jsonc.phpt" role="test" />
     <file name="009-incrementalparser.phpt" role="test" />
+    <file name="010-incrementalparserfile.phpt" role="test" />
     <file name="bug40503.phpt" role="test" />
     <file name="bug41034.phpt" role="test" />
     <file name="bug41067.phpt" role="test" />
@@ -91,6 +95,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="bug41504.phpt" role="test" />
     <file name="bug41567.phpt" role="test" />
     <file name="bug42090.phpt" role="test" />
+    <file name="bug42090-jsonc.phpt" role="test" />
     <file name="bug42785.phpt" role="test" />
     <file name="bug43941.phpt" role="test" />
     <file name="bug45791.phpt" role="test" />
@@ -106,6 +111,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="bug62369.phpt" role="test" />
     <file name="depth.phpt" role="test" />
     <file name="fail001.phpt" role="test" />
+    <file name="fail001-jsonc.phpt" role="test" />
     <file name="inf_nan_error.phpt" role="test" />
     <file name="json_decode_basic.phpt" role="test" />
     <file name="json_decode_error.phpt" role="test" />

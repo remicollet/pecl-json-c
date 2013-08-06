@@ -37,9 +37,13 @@ Windows build are available
 - http://windows.php.net/downloads/pecl/releases/jsonc/
 - http://windows.php.net/downloads/pecl/deps/
 
-Pending PR in upstream json-c library
+Merged PR in upstream json-c library (release pending)
 - number must not have leading zeroes
   https://github.com/json-c/json-c/pull/90
+
+Pending PR in upstream json-c library
+- string must be double-quoted
+  https://github.com/json-c/json-c/pull/94
 
 > The world will not be destroyed by those who do evil,
 > but by those who watch them without doing anything.

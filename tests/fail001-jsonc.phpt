@@ -181,12 +181,6 @@ AS ARRAY
 NULL
 Testing: ['single quote']
 AS OBJECT
-array(1) {
-  [0]=>
-  string(12) "single quote"
-}
+NULL
 AS ARRAY
-array(1) {
-  [0]=>
-  string(12) "single quote"
-}
+NULL
