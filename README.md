@@ -46,6 +46,7 @@ Merged PR in upstream json-c library (release pending)
 
 Pending PR in upstream json-c library
 - string must be double-quoted
+- no comment in strict mode
   https://github.com/json-c/json-c/pull/94
 
 > The world will not be destroyed by those who do evil,

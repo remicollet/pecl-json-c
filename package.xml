@@ -34,8 +34,9 @@ This is a drop-in alternative to PHP standard json extension.
  </stability>
  <license>PHP 3.01</license>
  <notes>
-- number must not have leading zeroes (json-c pr #90)
+- number must not have leading zeroes (json-c pr #90, merged)
 - string must be double-quoted (json-c PR #94)
+- comment are not allowed (json-c PR #94)
 - add JSON_C_BUNDLED and JSON_C_VERSION constants
  </notes>
  <contents>
