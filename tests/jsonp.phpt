@@ -20,9 +20,9 @@ foreach ($jsons as $json) {
 echo "Done\n";
 ?>
 --EXPECTF--	
-/* hello */"foo": string(3) "foo"
+/* hello */"foo": NULL
 // hello
-"foo": string(3) "foo"
+"foo": NULL
 ["\n"]: array(1) {
   [0]=>
   string(1) "

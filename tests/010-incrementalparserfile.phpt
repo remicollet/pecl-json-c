@@ -10,7 +10,7 @@ class Foo {
 	public $hash = array("One" => 1, "Two" => 2, "Three" =>3);
 	public $pi   = 3.14159;
 }
-$parser = new JsonIncrementalParser();
+$parser = new JsonIncrementalParser(10, JSON_PARSER_NOTSTRICT);
 
 $fic  = __DIR__.'/minitest.json';
 $txt  = "/*\nTest file\n*/\n";
