@@ -10,7 +10,11 @@ json_encode is the same than current PHP one.
 json_decode use the json-c library and is mostly compatible.
 - > 64 bits integer are always parsed as integer (never float or string)
 - 33 to 64 bits bits integer are parsed as float (or string) on 32 bits build
-- comments are allowed in json string/files
+
+A new option JSON_PARSER_NOTSTRICT allow to reduce parser strictness
+- integer could start with zero
+- string can be single ou double-quoted
+- comments are allowed in json string/files (Using /* */ or // until end of line)
 
 Also provide a new incremental parser object:
 
