@@ -24,7 +24,7 @@ $b = microtime(true);
 if ($json) {
     printf("Decode in %.5f sec\n", $b-$a);
 } else {
-    echo "Decode not inplemented\n";
+    echo "Decode not implemented\n";
 }
 /*
 if (class_exists("JsonIncrementalParser")) {
