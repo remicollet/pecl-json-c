@@ -15,6 +15,7 @@ A new option JSON_PARSER_NOTSTRICT allow to reduce parser strictness
 - integer could start with zero
 - string can be single ou double-quoted
 - comments are allowed in json string/files (Using /* */ or // until end of line)
+- ignore trailing char after data
 
 Also provide a new incremental parser object:
 
@@ -51,6 +52,7 @@ Merged PR in upstream json-c library (release pending)
 Pending PR in upstream json-c library
 - string must be double-quoted
 - no comment in strict mode
+- no trailing char after data
   https://github.com/json-c/json-c/pull/94
 
 > The world will not be destroyed by those who do evil,
