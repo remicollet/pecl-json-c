@@ -1,7 +1,12 @@
 --TEST--
 json_decode() with comments
 --SKIPIF--
-<?php if (!extension_loaded("json")) print "skip"; ?>
+<?php
+  if (!extension_loaded("json"))
+    die('skip: json extension not available');
+  if (!JSON_C_BUNDLED && version_compare(JSON_C_VERSION, "0.11", "le"))
+    die('skip: need json-c library > 0.11')
+?>
 --FILE--
 <?php
 
