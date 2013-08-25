@@ -3,6 +3,8 @@ pecl-json-c
 
 JSON-C wrapper
 
+This is the sources repository for http://pecl.php.net/package/jsonc
+
 Should be a drop-in alternative to PHP json extension.
 
 json_encode is the same than current PHP one.
@@ -32,11 +34,14 @@ or, even simpler:
 	$ret = $parser->parseFile("somefile.json");
 	$result = $parser->get();
 
-Debian DEB available in unstable for PHP 5.5
-- http://packages.debian.org/sid/php5-json
+Debian DEB available in Jessie for PHP 5.5
+- http://packages.debian.org/jessie/php5-json
 
 Fedora 19 RPM are available in official repo
 - https://apps.fedoraproject.org/packages/php-pecl-jsonc
+
+Unbuntu DEB available in Saucy for PHP 5.5
+- http://packages.ubuntu.com/saucy/php5-json
 
 Fedora RPM are available in remi repo
 - http://blog.famillecollet.com/post/2013/06/04/php-pecl-json-1.3.0-en
