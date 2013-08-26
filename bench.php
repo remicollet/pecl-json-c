@@ -1,6 +1,11 @@
 <?php
 echo "\nPHP  Version: ".phpversion()."\n";
-echo "Json Version: ".phpversion('json')."\n\n";
+if (version_compare(phpversion('json'), '1.3.0', '<'))
+	$ver = "ext/json ".phpversion('json');
+else
+	$ver = "pecl/jsonc ".phpversion('json');
+
+echo "Json Version: ".$ver."\n\n";
 
 $ary = get_loaded_extensions();
 for($i=0; $i<pow(2, 7); $i++){
