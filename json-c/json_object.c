@@ -157,6 +157,9 @@ int json_object_put(struct json_object *jso)
 	return 0;
 }
 
+#define MAXSTACK 256000
+static struct json_object objectstack[MAXSTACK];
+static int stackpos = 0;
 
 /* generic object construction and destruction parts */
 
@@ -168,15 +171,19 @@ static void json_object_generic_delete(struct json_object* jso)
   lh_table_delete(json_object_table, jso);
 #endif /* REFCOUNT_DEBUG */
   printbuf_free(jso->_pb);
-  free(jso);
+  //free(jso);
 }
 
 static struct json_object* json_object_new(enum json_type o_type)
 {
   struct json_object *jso;
-
+/*
   jso = (struct json_object*)calloc(sizeof(struct json_object), 1);
   if(!jso) return NULL;
+*/
+  if (stackpos == MAXSTACK) return NULL;
+  jso = &objectstack[stackpos++];
+
   jso->o_type = o_type;
   jso->_ref_count = 1;
   jso->_delete = &json_object_generic_delete;
