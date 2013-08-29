@@ -5,12 +5,12 @@ PHP  Version: 5.5.3
 Json Version: ext/json 1.2.1
 
 Count: 131473
-Encode in 0.00849 sec, 520581 bytes
-Decode in 0.03286 sec
+Encode in 0.00811 sec, 519448 bytes
+Decode in 0.03408 sec
 
 PHP  Version: 5.5.3
 Json Version: pecl/jsonc 1.3.2-dev
 
 Count: 131473
-Encode in 0.00855 sec, 520572 bytes
-Decode in 0.06870 sec
+Encode in 0.00884 sec, 519448 bytes
+Decode in 0.06959 sec
