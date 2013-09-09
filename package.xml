@@ -19,7 +19,7 @@ This is a drop-in alternative to PHP standard json extension.
  <date>2013-09-09</date>
  <time>12:50:00</time>
  <version>
-  <release>1.3.2</release>
+  <release>1.3.3dev</release>
   <api>1.3.0</api>
  </version>
  <stability>
@@ -28,11 +28,7 @@ This is a drop-in alternative to PHP standard json extension.
  </stability>
  <license>PHP 3.01</license>
  <notes>
-- number must not have leading zeroes (json-c pr #90, merged)
-- string must be double-quoted (json-c PR #94)
-- comment are not allowed (json-c PR #94)
-- trailing char after data not allowed (json-c PR #94)
-- add JSON_C_BUNDLED and JSON_C_VERSION constants
+-
  </notes>
  <contents>
   <dir name="/">
@@ -369,6 +365,25 @@ Version 1.3.0 is Major rewrite which use the use json-c library 0.11:
 - build as json.so or jsonc.so (--with-jsonc option)
 - rename LIBJSON_VERSION to HAVE_LIBJSON (internal only)
 - parse 64 bits integer as float, or string, on 32 bits build
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.2</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+    <date>2013-09-09</date>
+   <license>PHP 3.01</license>
+   <notes>
+- number must not have leading zeroes (json-c library pr #90, merged)
+- string must be double-quoted (json-c library PR #94, merged)
+- comment are not allowed (json-c library PR #94, merged)
+- trailing char after data not allowed (json-c library PR #94, merged)
+- add JSON_C_BUNDLED and JSON_C_VERSION constants
    </notes>
   </release>
  </changelog>
