@@ -53,12 +53,13 @@ Windows build are available
 Merged PR in upstream json-c library (release pending)
 - number must not have leading zeroes
   https://github.com/json-c/json-c/pull/90
-
-Pending PR in upstream json-c library
 - string must be double-quoted
 - no comment in strict mode
 - no trailing char after data
   https://github.com/json-c/json-c/pull/94
+
+Pending PR in upstream json-c library
+- none
 
 > The world will not be destroyed by those who do evil,
 > but by those who watch them without doing anything.
