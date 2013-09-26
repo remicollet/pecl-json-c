@@ -801,7 +801,7 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 				break;
 
 			case json_type_string:
-				RETVAL_STRING(json_object_get_string(new_obj), 1);
+				RETVAL_STRINGL(json_object_get_string(new_obj), json_object_get_string_len(new_obj), 1);
 				break;
 
 			case json_type_int:

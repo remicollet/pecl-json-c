@@ -28,7 +28,7 @@ This is a drop-in alternative to PHP standard json extension.
  </stability>
  <license>PHP 3.01</license>
  <notes>
--
+- properly decode string with null-byte
  </notes>
  <contents>
   <dir name="/">
