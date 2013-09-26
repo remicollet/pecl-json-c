@@ -80,6 +80,8 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="008-jsonc.phpt" role="test" />
     <file name="009-incrementalparser.phpt" role="test" />
     <file name="010-incrementalparserfile.phpt" role="test" />
+    <file name="011-comments.phpt" role="test" />
+    <file name="012-null-byte.phpt" role="test" />
     <file name="bug40503.phpt" role="test" />
     <file name="bug41034.phpt" role="test" />
     <file name="bug41067.phpt" role="test" />
