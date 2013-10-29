@@ -15,9 +15,11 @@
   | Authors: Remi Collet <remi@php.net>                                  |
   +----------------------------------------------------------------------+
 */
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+/* Building in PECL */
+#include "../config.h"
 
-#ifdef HAVE_INTTYPES_H
-#define JSON_C_HAVE_INTTYPES_H 1
+#else
+/* Building in PHP tree */
+#include "php_config.h"
 #endif
-

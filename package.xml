@@ -29,6 +29,7 @@ This is a drop-in alternative to PHP standard json extension.
  <license>PHP 3.01</license>
  <notes>
 - properly decode string value with null-byte
+- allow to build in php tree
  </notes>
  <contents>
   <dir name="/">
@@ -45,6 +46,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="AUTHORS" role="src" />
     <file name="bits.h" role="src" />
     <file name="ChangeLog" role="src" />
+    <file name="config.h" role="src" />
     <file name="COPYING" role="src" />
     <file name="debug.c" role="src" />
     <file name="debug.h" role="src" />
