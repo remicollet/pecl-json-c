@@ -223,13 +223,13 @@ static PHP_MINIT_FUNCTION(json)
 	REGISTER_LONG_CONSTANT("JSON_OBJECT_AS_ARRAY",   PHP_JSON_OBJECT_AS_ARRAY,    CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_PARSER_NOTSTRICT",  PHP_JSON_PARSER_NOTSTRICT,   CONST_CS | CONST_PERSISTENT);
 
-	/* Not yet implemented */
+	/* Only implemented for 32-63 bits integer */
 	REGISTER_LONG_CONSTANT("JSON_BIGINT_AS_STRING",  PHP_JSON_BIGINT_AS_STRING,   CONST_CS | CONST_PERSISTENT);
 
 	/* json-c library information */
 #ifdef HAVE_LIBJSON
 	REGISTER_LONG_CONSTANT("JSON_C_BUNDLED",         0,                           CONST_CS | CONST_PERSISTENT);
-	REGISTER_STRING_CONSTANT("JSON_C_VERSION",       json_c_version(),            CONST_CS | CONST_PERSISTENT);
+	REGISTER_STRING_CONSTANT("JSON_C_VERSION",       (char *)json_c_version(),    CONST_CS | CONST_PERSISTENT);
 #else
 	REGISTER_LONG_CONSTANT("JSON_C_BUNDLED",         1,                           CONST_CS | CONST_PERSISTENT);
 	REGISTER_STRING_CONSTANT("JSON_C_VERSION",       JSON_C_VERSION,              CONST_CS | CONST_PERSISTENT);
@@ -790,6 +790,7 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 	json_type     type;
 	zval         *tmpval;
 	int           i, nb;
+	int64_t       i64;
 	const char   *key;
 
 	RETVAL_NULL();
@@ -805,10 +806,14 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 				break;
 
 			case json_type_int:
+				i64 = json_object_get_int64(new_obj);
+				if (i64==INT64_MAX || i64==INT64_MIN) {
+					php_error_docref(NULL TSRMLS_CC, E_WARNING, "interger overflow detected");
+				}
 #if SIZEOF_LONG > 4
-				RETVAL_LONG(json_object_get_int64(new_obj));
+				RETVAL_LONG(i64);
 #else
-				if (json_object_get_int64(new_obj) == (int64_t)json_object_get_int(new_obj)) {
+				if (i64 == (int64_t)json_object_get_int(new_obj)) {
 					RETVAL_LONG(json_object_get_int(new_obj));
 
 				} else if (options & PHP_JSON_BIGINT_AS_STRING) {
@@ -971,12 +976,6 @@ static PHP_FUNCTION(json_decode)
 	} else {
 		options &= ~PHP_JSON_OBJECT_AS_ARRAY;
 	}
-
-#if SIZEOF_LONG > 4
-	if (options & PHP_JSON_BIGINT_AS_STRING) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "option JSON_BIGINT_AS_STRING not implemented");
-	}
-#endif
 
 	php_json_decode_ex(return_value, str, str_len, options, depth TSRMLS_CC);
 }

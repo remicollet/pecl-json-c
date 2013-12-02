@@ -15,8 +15,9 @@ var_dump($x->largenum);
 echo "Done\n";
 ?>
 --EXPECTF--
+Warning: json_decode(): interger overflow detected in %s/008-jsonc.php on line 3
 int(9223372036854775807)
 
-Warning: json_decode(): option JSON_BIGINT_AS_STRING not implemented in %s/008-jsonc.php on line 5
+Warning: json_decode(): interger overflow detected in %s/008-jsonc.php on line 5
 int(9223372036854775807)
 Done

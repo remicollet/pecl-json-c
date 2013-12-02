@@ -30,6 +30,8 @@ This is a drop-in alternative to PHP standard json extension.
  <notes>
 - properly decode string value with null-byte
 - allow to build in php tree
+- drop confusing warning about JSON_BIGINT_AS_STRING
+- add warning "interger overflow detected"
  </notes>
  <contents>
   <dir name="/">
