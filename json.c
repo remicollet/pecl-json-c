@@ -808,7 +808,7 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 			case json_type_int:
 				i64 = json_object_get_int64(new_obj);
 				if (i64==INT64_MAX || i64==INT64_MIN) {
-					php_error_docref(NULL TSRMLS_CC, E_WARNING, "integer overflow detected");
+					php_error_docref(NULL TSRMLS_CC, E_NOTICE, "integer overflow detected");
 				}
 #if SIZEOF_LONG > 4
 				RETVAL_LONG(i64);
