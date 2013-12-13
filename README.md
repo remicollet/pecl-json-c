@@ -40,7 +40,7 @@ Debian DEB available in Jessie for PHP 5.5
 Fedora 19 RPM are available in official repo
 - https://apps.fedoraproject.org/packages/php-pecl-jsonc
 
-Unbuntu DEB available in Saucy for PHP 5.5
+Ubuntu DEB available in Saucy for PHP 5.5
 - http://packages.ubuntu.com/saucy/php5-json
 
 Fedora RPM are available in remi repo
