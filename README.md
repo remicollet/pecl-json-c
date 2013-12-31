@@ -15,7 +15,7 @@ json_decode use the json-c library and is mostly compatible.
 
 A new option JSON_PARSER_NOTSTRICT allow to reduce parser strictness
 - integer could start with zero
-- string can be single ou double-quoted
+- string can be single or double-quoted
 - comments are allowed in json string/files (Using /* */ or // until end of line)
 - ignore trailing char after data
 
