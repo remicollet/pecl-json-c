@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2012 The PHP Group                                |
+  | Copyright (c) 1997-2014 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -52,7 +52,8 @@ static PHP_METHOD(JsonIncrementalParser, parseFile);
 
 static const char digits[] = "0123456789abcdef";
 
-zend_class_entry *php_json_serializable_ce, *php_json_parser_ce;
+PHP_JSON_API zend_class_entry *php_json_serializable_ce;
+zend_class_entry *php_json_parser_ce;
 
 static zend_object_handlers php_json_handlers_parser;
 

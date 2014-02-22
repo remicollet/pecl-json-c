@@ -16,10 +16,10 @@ This is a drop-in alternative to PHP standard json extension.
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2013-12-12</date>
+ <date>2014-02-22</date>
  <time>12:50:00</time>
  <version>
-  <release>1.3.3</release>
+  <release>1.3.4</release>
   <api>1.3.0</api>
  </version>
  <stability>
@@ -28,10 +28,7 @@ This is a drop-in alternative to PHP standard json extension.
  </stability>
  <license>PHP 3.01</license>
  <notes>
-- properly decode string value with null-byte
-- allow to build in php tree
-- drop confusing warning about JSON_BIGINT_AS_STRING
-- add E_NOTICE "integer overflow detected"
+- Fixed bug #65753 JsonSerializeable couldn't implement on module extension
  </notes>
  <contents>
   <dir name="/">
@@ -390,6 +387,24 @@ Version 1.3.0 is Major rewrite which use the use json-c library 0.11:
 - comment are not allowed (json-c library PR #94, merged)
 - trailing char after data not allowed (json-c library PR #94, merged)
 - add JSON_C_BUNDLED and JSON_C_VERSION constants
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.3</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+    <date>2013-12-12</date>
+   <license>PHP 3.01</license>
+   <notes>
+- properly decode string value with null-byte
+- allow to build in php tree
+- drop confusing warning about JSON_BIGINT_AS_STRING
+- add E_NOTICE "integer overflow detected"
    </notes>
   </release>
  </changelog>
