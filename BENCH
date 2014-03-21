@@ -1,16 +1,23 @@
 Benchmark of a huge array encode/decode
 
 
-PHP  Version: 5.5.3
-Json Version: ext/json 1.2.1
+PHP  Version: 5.6.0-dev
+Json Version: ext/json   1.2.1
 
-Count: 131473
-Encode in 0.00811 sec, 519448 bytes
-Decode in 0.03408 sec
+Count: 262929
+Encode in 0.01415 sec, 1038857 bytes
+Decode in 0.04043 sec
 
-PHP  Version: 5.5.3
-Json Version: pecl/jsonc 1.3.2-dev
+PHP  Version: 5.6.0-dev
+Json Version: pecl/jsonc 1.3.4
 
-Count: 131473
-Encode in 0.00884 sec, 519448 bytes
-Decode in 0.06959 sec
+Count: 262929
+Encode in 0.01375 sec, 1038857 bytes
+Decode in 0.08779 sec
+
+PHP  Version: 5.6.0-dev
+Json Version: pecl/jsond 1.3.0
+
+Count: 262929
+Encode in 0.01428 sec, 1038858 bytes
+Decode in 0.04500 sec
