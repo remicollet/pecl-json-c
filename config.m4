@@ -11,6 +11,9 @@ PHP_ARG_WITH(jsonc, whether to rename module file to jsonc,
 PHP_ARG_WITH(libjson, libjson,
 [  --with-libjson          JSON: use system json-c], no, no)
 
+PHP_ARG_ENABLE(rdrand, whether to enable RDRAND Hardware RNG Hash Seed generation on supported x86/x64 platforms,
+[  --disable-rdrand        Disable RDRAND Hardware RNG Hash Seed generation on supported x86/x64 platforms], yes, no)
+
 if test "$PHP_JSON" != "no"; then
 	AC_GNU_SOURCE
 	AC_DEFINE([HAVE_JSON], 1 ,[whether to enable JavaScript Object Serialization support])
@@ -62,7 +65,7 @@ return (sscanf("1234567890123456789012345","%ld",&i)==1 && errno==ERANGE && i==I
 		],[
 			AC_MSG_RESULT([no, not found])
 		])
-		AC_CHECK_HEADERS(fcntl.h limits.h strings.h syslog.h unistd.h [sys/param.h] stdarg.h inttypes.h locale.h)
+		AC_CHECK_HEADERS(fcntl.h limits.h strings.h syslog.h unistd.h [sys/param.h] stdarg.h inttypes.h locale.h endian.h)
 		AC_CHECK_FUNCS(strcasecmp strdup strndup strerror snprintf vsnprintf vasprintf open vsyslog strncasecmp setlocale)
 
 		PHP_LIBJSON_SOURCES="json-c/arraylist.c \
@@ -73,7 +76,12 @@ return (sscanf("1234567890123456789012345","%ld",&i)==1 && errno==ERANGE && i==I
 							json-c/json_tokener.c \
 							json-c/json_util.c \
 							json-c/linkhash.c \
+							json-c/random_seed.c \
 							json-c/printbuf.c"
+	fi
+
+	if test "$PHP_RDRAND" != "no"; then
+		AC_DEFINE(ENABLE_RDRAND, 1, [Enable RDRANR Hardware RNG Hash Seed])
 	fi
 
 	AC_MSG_CHECKING(JSON extension name:)

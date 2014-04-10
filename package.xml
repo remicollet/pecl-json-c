@@ -16,10 +16,10 @@ This is a drop-in alternative to PHP standard json extension.
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2014-02-22</date>
+ <date>2014-04-10</date>
  <time>12:50:00</time>
  <version>
-  <release>1.3.4</release>
+  <release>1.3.5</release>
   <api>1.3.0</api>
  </version>
  <stability>
@@ -28,7 +28,8 @@ This is a drop-in alternative to PHP standard json extension.
  </stability>
  <license>PHP 3.01</license>
  <notes>
-- Fixed bug #65753 JsonSerializeable couldn't implement on module extension
+- libjson-c CVE-2013-6371: hash collision denial of service
+- libjson-c CVE-2013-6370: buffer overflow if size_t is larger than int
  </notes>
  <contents>
   <dir name="/">
@@ -67,6 +68,8 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="linkhash.h" role="src" />
     <file name="printbuf.c" role="src" />
     <file name="printbuf.h" role="src" />
+    <file name="random_seed.c" role="src" />
+    <file name="random_seed.h" role="src" />
    </dir> <!-- //json-c -->
    <dir name="tests">
     <file name="001.phpt" role="test" />
@@ -405,6 +408,21 @@ Version 1.3.0 is Major rewrite which use the use json-c library 0.11:
 - allow to build in php tree
 - drop confusing warning about JSON_BIGINT_AS_STRING
 - add E_NOTICE "integer overflow detected"
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3.4</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+    <date>2014-02-22</date>
+   <license>PHP 3.01</license>
+   <notes>
+- Fixed bug #65753 JsonSerializeable couldn't implement on module extension
    </notes>
   </release>
  </changelog>
