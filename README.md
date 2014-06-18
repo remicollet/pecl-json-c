@@ -5,13 +5,14 @@ JSON-C wrapper
 
 This is the sources repository for http://pecl.php.net/package/jsonc
 
-Should be a drop-in alternative to PHP json extension.
+This is *not* a drop-in alternative to PHP json extension.
 
-json_encode is the same than current PHP one.
+json_encode *should* be the same as the current PHP one.
 
 json_decode use the json-c library and is mostly compatible.
 - > 64 bits integer are always parsed as integer (never float or string)
 - 33 to 64 bits bits integer are parsed as float (or string) on 32 bits build
+- It [fails to drop](https://github.com/remicollet/pecl-json-c/issues/9) invalid UTF-8 characters by default as it does not use `JSON_TOKENIZER_STRICT` by default.
 
 A new option JSON_PARSER_NOTSTRICT allow to reduce parser strictness
 - integer could start with zero
