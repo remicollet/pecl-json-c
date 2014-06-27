@@ -19,7 +19,7 @@ This is a drop-in alternative to PHP standard json extension.
  <date>2014-04-10</date>
  <time>12:50:00</time>
  <version>
-  <release>1.3.5</release>
+  <release>1.3.6dev</release>
   <api>1.3.0</api>
  </version>
  <stability>
@@ -28,8 +28,7 @@ This is a drop-in alternative to PHP standard json extension.
  </stability>
  <license>PHP 3.01</license>
  <notes>
-- libjson-c CVE-2013-6371: hash collision denial of service
-- libjson-c CVE-2013-6370: buffer overflow if size_t is larger than int
+- apply fix for #66021 (Blank line inside empty array/object)
  </notes>
  <contents>
   <dir name="/">
@@ -106,6 +105,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="bug61537.phpt" role="test" />
     <file name="bug61978.phpt" role="test" />
     <file name="bug62369.phpt" role="test" />
+    <file name="bug66021.phpt" role="test" />
     <file name="depth.phpt" role="test" />
     <file name="fail001.phpt" role="test" />
     <file name="inf_nan_error.phpt" role="test" />
@@ -423,6 +423,22 @@ Version 1.3.0 is Major rewrite which use the use json-c library 0.11:
    <license>PHP 3.01</license>
    <notes>
 - Fixed bug #65753 JsonSerializeable couldn't implement on module extension
+   </notes>
+  </release>
+  <release>
+   <date>2014-04-10</date>
+   <version>
+    <release>1.3.5</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license>PHP 3.01</license>
+   <notes>
+- libjson-c CVE-2013-6371: hash collision denial of service
+- libjson-c CVE-2013-6370: buffer overflow if size_t is larger than int
    </notes>
   </release>
  </changelog>
