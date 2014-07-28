@@ -29,6 +29,7 @@ This is a drop-in alternative to PHP standard json extension.
  <license>PHP 3.01</license>
  <notes>
 - apply fix for #66021 (Blank line inside empty array/object)
+- fix #20 json_decode segfault when depth=0
  </notes>
  <contents>
   <dir name="/">

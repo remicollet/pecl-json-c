@@ -888,6 +888,11 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 	json_tokener *tok;
 	json_object  *new_obj;
 
+	if (depth <= 0) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Depth must be greater than zero");
+		RETURN_NULL();
+	}
+
 	RETVAL_NULL();
 
 	tok = json_tokener_new_ex(depth);
