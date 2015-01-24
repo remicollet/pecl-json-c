@@ -36,6 +36,14 @@
 #endif
 #include <zend_exceptions.h>
 
+#include <float.h>
+#if defined(DBL_MANT_DIG) && defined(DBL_MIN_EXP)
+#define NUM_BUF_SIZE (3 + DBL_MANT_DIG - DBL_MIN_EXP)
+#else
+#define NUM_BUF_SIZE 1080
+#endif
+
+
 static PHP_MINFO_FUNCTION(json);
 
 static PHP_FUNCTION(json_encode);
@@ -204,6 +212,7 @@ static PHP_MINIT_FUNCTION(json)
 	REGISTER_LONG_CONSTANT("JSON_PRETTY_PRINT", PHP_JSON_PRETTY_PRINT, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_UNESCAPED_UNICODE", PHP_JSON_UNESCAPED_UNICODE, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("JSON_PARTIAL_OUTPUT_ON_ERROR", PHP_JSON_PARTIAL_OUTPUT_ON_ERROR, CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("JSON_PRESERVE_ZERO_FRACTION", PHP_JSON_PRESERVE_ZERO_FRACTION, CONST_CS | CONST_PERSISTENT);
 
 	/* old parser error codes - kept for compatibility */
 	REGISTER_LONG_CONSTANT("JSON_ERROR_STATE_MISMATCH", PHP_JSON_ERROR_STATE_MISMATCH, CONST_CS | CONST_PERSISTENT);
@@ -546,9 +555,17 @@ static void json_escape_string(smart_str *buf, char *s, int len, int options TSR
 				smart_str_append_long(buf, p);
 			} else if (type == IS_DOUBLE) {
 				if (!zend_isinf(d) && !zend_isnan(d)) {
-					char tmp[1024];
-					php_gcvt(d, EG(precision), '.', 'e', tmp);
-					smart_str_appends(buf, tmp);
+					char num[NUM_BUF_SIZE];
+					int l;
+
+					php_gcvt(d, EG(precision), '.', 'e', (char *)num);
+					l = strlen(num);
+					if (options & PHP_JSON_PRESERVE_ZERO_FRACTION && strchr(num, '.') == NULL && l < NUM_BUF_SIZE - 2) {
+						num[l++] = '.';
+						num[l++] = '0';
+						num[l] = '\0';
+					}
+					smart_str_appendl(buf, num, l);
 				} else {
 					JSON_G(error_code) = PHP_JSON_ERROR_INF_OR_NAN;
 					smart_str_appendc(buf, '0');
@@ -749,12 +766,19 @@ PHP_JSON_API void php_json_encode(smart_str *buf, zval *val, int options TSRMLS_
 
 		case IS_DOUBLE:
 			{
-				char tmp[1024];
+				char num[NUM_BUF_SIZE];
 				double dbl = Z_DVAL_P(val);
+				int len;
 
 				if (!zend_isinf(dbl) && !zend_isnan(dbl)) {
-					php_gcvt(dbl, EG(precision), '.', 'e', tmp);
-					smart_str_appends(buf, tmp);
+					php_gcvt(dbl, EG(precision), '.', 'e', (char *)num);
+					len = strlen(num);
+					if (options & PHP_JSON_PRESERVE_ZERO_FRACTION && strchr(num, '.') == NULL && len < NUM_BUF_SIZE - 2) {
+						num[len++] = '.';
+						num[len++] = '0';
+						num[len] = '\0';
+					}
+					smart_str_appendl(buf, num, len);
 				} else {
 					JSON_G(error_code) = PHP_JSON_ERROR_INF_OR_NAN;
 					smart_str_appendc(buf, '0');

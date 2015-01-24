@@ -22,7 +22,7 @@
 #ifndef PHP_JSON_H
 #define PHP_JSON_H
 
-#define PHP_JSON_VERSION "1.3.6"
+#define PHP_JSON_VERSION "1.3.7-dev"
 #include "ext/standard/php_smart_str.h"
 
 extern zend_module_entry json_module_entry;
@@ -80,6 +80,7 @@ extern PHP_JSON_API zend_class_entry *php_json_serializable_ce;
 #define PHP_JSON_PRETTY_PRINT	(1<<7)
 #define PHP_JSON_UNESCAPED_UNICODE	(1<<8)
 #define PHP_JSON_PARTIAL_OUTPUT_ON_ERROR (1<<9)
+#define PHP_JSON_PRESERVE_ZERO_FRACTION (1<<10)
 
 /* Internal flags */
 #define PHP_JSON_OUTPUT_ARRAY	0
