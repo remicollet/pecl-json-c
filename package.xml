@@ -16,7 +16,7 @@ This is a drop-in alternative to PHP standard json extension.
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2015-01-24</date>
+ <date>2015-02-02</date>
  <time>12:50:00</time>
  <version>
   <release>1.3.7dev</release>
@@ -30,6 +30,8 @@ This is a drop-in alternative to PHP standard json extension.
  <notes>
 - apply fix for #50224 where float without decimals were converted to
   integer by adding JSON_PRESERVE_ZERO_FRACTION. (Juan Basso)
+- apply fix for #68938 json_decode() decodes empty string without error.
+  (jeremy at bat-country dot us)
  </notes>
  <contents>
   <dir name="/">
@@ -108,6 +110,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="bug61978.phpt" role="test" />
     <file name="bug62369.phpt" role="test" />
     <file name="bug66021.phpt" role="test" />
+    <file name="bug68938.phpt" role="test" />
     <file name="depth.phpt" role="test" />
     <file name="fail001.phpt" role="test" />
     <file name="inf_nan_error.phpt" role="test" />
