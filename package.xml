@@ -43,11 +43,11 @@ This is a drop-in alternative to PHP standard json extension.
    <dir name="json-c">
     <file name="arraylist.c" role="src" />
     <file name="arraylist.h" role="src" />
-    <file name="AUTHORS" role="src" />
+    <file name="AUTHORS" role="doc" />
     <file name="bits.h" role="src" />
     <file name="ChangeLog" role="src" />
     <file name="config.h" role="src" />
-    <file name="COPYING" role="src" />
+    <file name="COPYING" role="doc" />
     <file name="debug.c" role="src" />
     <file name="debug.h" role="src" />
     <file name="json_config.h" role="src" />
