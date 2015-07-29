@@ -608,53 +608,56 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
       break;
 
     case json_tokener_state_number:
-      {
-	/* Advance until we change state */
-	const char *case_start = str;
-	int case_len=0;
-	while(c && strchr(json_number_chars, c)) {
-	  ++case_len;
-	  if(c == '.' || c == 'e' || c == 'E')
-	    tok->is_double = 1;
-	  if (!ADVANCE_CHAR(str, tok) || !PEEK_CHAR(c, tok)) {
-	    printbuf_memappend_fast(tok->pb, case_start, case_len);
-	    goto out;
-	  }
-	}
-        if (case_len>0)
-          printbuf_memappend_fast(tok->pb, case_start, case_len);
-      }
-      {
-	int64_t num64;
-	double  numd;
-	if (!tok->is_double && json_parse_int64(tok->pb->buf, &num64) == 0) {
-		if (num64 && tok->pb->buf[0]=='0' && (tok->flags & JSON_TOKENER_STRICT)) {
-			/* in strick mode, number must not start with 0 */
-			tok->err = json_tokener_error_parse_number;
-			goto out;
+		{
+			/* Advance until we change state */
+			const char *case_start = str;
+			int case_len=0;
+
+			while(c && strchr(json_number_chars, c)) {
+				++case_len;
+				if(c == '.' || c == 'e' || c == 'E')
+					tok->is_double = 1;
+				if (!ADVANCE_CHAR(str, tok) || !PEEK_CHAR(c, tok)) {
+					printbuf_memappend_fast(tok->pb, case_start, case_len);
+					goto out;
+				}
+			}
+			if (case_len>0) {
+				printbuf_memappend_fast(tok->pb, case_start, case_len);
+			}
 		}
+		{
+			int64_t num64;
+			double  numd;
 
-		if (strlen(tok->pb->buf) < tok->intmaxlen) {
-			current = json_object_new_int64(num64);
+			if (!tok->is_double && json_parse_int64(tok->pb->buf, &num64) == 0) {
+				if (num64 && tok->pb->buf[0]=='0' && (tok->flags & JSON_TOKENER_STRICT)) {
+					/* in strick mode, number must not start with 0 */
+					tok->err = json_tokener_error_parse_number;
+					goto out;
+				}
 
-		} else if (tok->flags & JSON_TOKENER_BIGINT_AS_STRING) {
-			current = json_object_new_string_len(tok->pb->buf, tok->pb->bpos);
+				if (strlen(tok->pb->buf) < tok->intmaxlen) {
+					current = json_object_new_int64(num64);
 
-		} else {
-			json_parse_double(tok->pb->buf, &numd);
-			current = json_object_new_double(numd);
+				} else if (tok->flags & JSON_TOKENER_BIGINT_AS_STRING) {
+					current = json_object_new_string_len(tok->pb->buf, tok->pb->bpos);
+
+				} else {
+					json_parse_double(tok->pb->buf, &numd);
+					current = json_object_new_double(numd);
+				}
+			} else if(tok->is_double && json_parse_double(tok->pb->buf, &numd) == 0) {
+				current = json_object_new_double(numd);
+			} else {
+				tok->err = json_tokener_error_parse_number;
+				goto out;
+			}
+			saved_state = json_tokener_state_finish;
+			state = json_tokener_state_eatws;
+			goto redo_char;
 		}
-	} else if(tok->is_double && json_parse_double(tok->pb->buf, &numd) == 0) {
-          current = json_object_new_double(numd);
-        } else {
-          tok->err = json_tokener_error_parse_number;
-          goto out;
-        }
-        saved_state = json_tokener_state_finish;
-        state = json_tokener_state_eatws;
-        goto redo_char;
-      }
-      break;
+	break;
 
     case json_tokener_state_array_after_sep:
     case json_tokener_state_array:
