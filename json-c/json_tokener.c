@@ -709,7 +709,7 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
 		}
 	saved_state = json_tokener_state_finish;
 	state = json_tokener_state_eatws;
-      } else if (c == '"' || c == '\'') {
+      } else if (c == '"' || (c == '\'' && !(tok->flags & JSON_TOKENER_STRICT))) {
 	tok->quote_char = c;
 	printbuf_reset(tok->pb);
 	state = json_tokener_state_object_field;

@@ -31,6 +31,7 @@ This is a drop-in alternative to PHP standard json extension.
 - using system libjson-c is no more supported
 - fix BIGINT behavior
 - fix #12 allow float with starting with a dot
+- fix #23 single quote in property name
  </notes>
  <contents>
   <dir name="/">
@@ -108,6 +109,8 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="bug61978.phpt" role="test" />
     <file name="bug62369.phpt" role="test" />
     <file name="bug66021.phpt" role="test" />
+    <file name="issue12.phpt" role="test" />
+    <file name="issue23.phpt" role="test" />
     <file name="depth.phpt" role="test" />
     <file name="fail001.phpt" role="test" />
     <file name="inf_nan_error.phpt" role="test" />
