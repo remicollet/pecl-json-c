@@ -30,6 +30,7 @@ This is a drop-in alternative to PHP standard json extension.
  <notes>
 - using system libjson-c is no more supported
 - fix BIGINT behavior
+- fix #12 allow float with starting with a dot
  </notes>
  <contents>
   <dir name="/">

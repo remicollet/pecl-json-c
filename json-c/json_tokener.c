@@ -338,9 +338,10 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
       case '9':
 #endif
       case '-':
+      case '.':
 	state = json_tokener_state_number;
 	printbuf_reset(tok->pb);
-	tok->is_double = 0;
+	tok->is_double = (c=='.' ? 1 : 0);
 	goto redo_char;
       default:
 	tok->err = json_tokener_error_parse_unexpected;
