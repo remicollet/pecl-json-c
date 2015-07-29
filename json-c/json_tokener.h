@@ -84,6 +84,7 @@ struct json_tokener
   char quote_char;
   struct json_tokener_srec *stack;
   int flags;
+  int intmaxlen;
 };
 
 /**
@@ -96,7 +97,10 @@ struct json_tokener
  *
  * @see json_tokener_set_flags()
  */
-#define JSON_TOKENER_STRICT  0x01
+#define JSON_TOKENER_STRICT            0x01
+
+/* BIGINT as string instead of float */
+#define JSON_TOKENER_BIGINT_AS_STRING  0x02
 
 /**
  * Given an error previously returned by json_tokener_get_error(),
@@ -135,7 +139,7 @@ extern struct json_object* json_tokener_parse_verbose(const char *str, enum json
 /**
  * Set flags that control how parsing will be done.
  */
-extern void json_tokener_set_flags(struct json_tokener *tok, int flags);
+extern void json_tokener_set_flags(struct json_tokener *tok, int flags, int intmaxlen);
 
 /** 
  * Parse a string and return a non-NULL json_object if a valid JSON value

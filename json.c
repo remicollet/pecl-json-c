@@ -834,9 +834,6 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 
 			case json_type_int:
 				i64 = json_object_get_int64(new_obj);
-				if (i64==INT64_MAX || i64==INT64_MIN) {
-					php_error_docref(NULL TSRMLS_CC, E_NOTICE, "integer overflow detected");
-				}
 #if SIZEOF_LONG > 4
 				RETVAL_LONG(i64);
 #else
@@ -911,7 +908,7 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 {
 	json_tokener *tok;
 	json_object  *new_obj;
-
+	int tok_opt = 0;
 	if (depth <= 0) {
 		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Depth must be greater than zero");
 		RETURN_NULL();
@@ -924,8 +921,13 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 		return;
 	}
 	if (!(options & PHP_JSON_PARSER_NOTSTRICT)) {
-		json_tokener_set_flags(tok, JSON_TOKENER_STRICT);
+		tok_opt = JSON_TOKENER_STRICT;
 	}
+	if (options & PHP_JSON_BIGINT_AS_STRING) {
+		tok_opt |= JSON_TOKENER_BIGINT_AS_STRING;
+	}
+	json_tokener_set_flags(tok, tok_opt, MAX_LENGTH_OF_LONG);
+
 	new_obj = json_tokener_parse_ex(tok, str, str_len);
 	if (json_tokener_get_error(tok)==json_tokener_continue) {
 		new_obj = json_tokener_parse_ex(tok, "", -1);
@@ -1064,7 +1066,7 @@ static PHP_FUNCTION(json_last_error_msg)
 */
 static PHP_METHOD(JsonIncrementalParser, __construct)
 {
-	long                           depth = JSON_PARSER_DEFAULT_DEPTH, options = 0;
+	long                           depth = JSON_PARSER_DEFAULT_DEPTH, options = 0, tok_opt=0;
 	struct php_json_object_parser *intern;
 	zend_error_handling            error_handling;
 
@@ -1083,8 +1085,12 @@ static PHP_METHOD(JsonIncrementalParser, __construct)
 		zend_throw_exception(zend_exception_get_default(TSRMLS_C), "Can't allocate parser", 0 TSRMLS_CC);
 	}
 	if (!(options & PHP_JSON_PARSER_NOTSTRICT)) {
-		json_tokener_set_flags(intern->tok, JSON_TOKENER_STRICT);
+		tok_opt = JSON_TOKENER_STRICT;
 	}
+	if (options & PHP_JSON_BIGINT_AS_STRING) {
+		tok_opt |= JSON_TOKENER_BIGINT_AS_STRING;
+	}
+	json_tokener_set_flags(intern->tok, tok_opt, MAX_LENGTH_OF_LONG);
 
 }
 /* }}} */

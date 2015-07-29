@@ -632,7 +632,17 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
 			tok->err = json_tokener_error_parse_number;
 			goto out;
 		}
-		current = json_object_new_int64(num64);
+
+		if (strlen(tok->pb->buf) < tok->intmaxlen) {
+			current = json_object_new_int64(num64);
+
+		} else if (tok->flags & JSON_TOKENER_BIGINT_AS_STRING) {
+			current = json_object_new_string_len(tok->pb->buf, tok->pb->bpos);
+
+		} else {
+			json_parse_double(tok->pb->buf, &numd);
+			current = json_object_new_double(numd);
+		}
 	} else if(tok->is_double && json_parse_double(tok->pb->buf, &numd) == 0) {
           current = json_object_new_double(numd);
         } else {
@@ -814,7 +824,8 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
   return NULL;
 }
 
-void json_tokener_set_flags(struct json_tokener *tok, int flags)
+void json_tokener_set_flags(struct json_tokener *tok, int flags, int intmaxlen)
 {
-	tok->flags = flags;
+	tok->flags     = flags;
+	tok->intmaxlen = intmaxlen;
 }
