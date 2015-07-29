@@ -20,6 +20,8 @@ if test "$PHP_JSON" != "no"; then
 	AC_HEADER_STDC
 
 	if test "$PHP_LIBJSON" != "no"; then
+		AC_MSG_ERROR(Build with system libjson-c is no more supported)
+
 		AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
 		AC_MSG_CHECKING(JSON-C version)
 		if test -x "$PKG_CONFIG" && $PKG_CONFIG --exists json-c; then
