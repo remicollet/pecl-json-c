@@ -941,7 +941,8 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 	if (options & PHP_JSON_BIGINT_AS_STRING) {
 		tok_opt |= JSON_TOKENER_BIGINT_AS_STRING;
 	}
-	json_tokener_set_flags(tok, tok_opt, MAX_LENGTH_OF_LONG);
+	json_tokener_set_flags(tok, tok_opt);
+	json_tokener_set_bigint(tok, MAX_LENGTH_OF_LONG, long_min_digits);
 
 	new_obj = json_tokener_parse_ex(tok, str, str_len);
 	if (json_tokener_get_error(tok)==json_tokener_continue) {
@@ -1109,7 +1110,8 @@ static PHP_METHOD(JsonIncrementalParser, __construct)
 	if (options & PHP_JSON_BIGINT_AS_STRING) {
 		tok_opt |= JSON_TOKENER_BIGINT_AS_STRING;
 	}
-	json_tokener_set_flags(intern->tok, tok_opt, MAX_LENGTH_OF_LONG);
+	json_tokener_set_flags(intern->tok, tok_opt);
+	json_tokener_set_bigint(intern->tok, MAX_LENGTH_OF_LONG, long_min_digits);
 
 }
 /* }}} */

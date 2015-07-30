@@ -239,6 +239,29 @@ char* strndup(const char* str, size_t n)
 /* End optimization macro defs */
 
 
+static int json_tokener_is_bigint(struct json_tokener *tok, const char *buf) {
+	int len = strlen(buf);
+	int neg = 0;
+
+	if (buf[0] == '-') {
+		neg = 1;
+		buf++;
+		len--;
+	}
+	if (tok->intmaxlen == 0 || len < tok->intmaxlen) {
+		return 0;
+
+	} else if (len == tok->intmaxlen) {
+		int cmp = strcmp(buf, tok->digits);
+
+		if (cmp < 0 || (cmp == 0 && neg)) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+
 struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
 					  const char *str, int len)
 {
@@ -637,7 +660,7 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
 					goto out;
 				}
 
-				if (strlen(tok->pb->buf) < tok->intmaxlen) {
+				if (!json_tokener_is_bigint(tok, tok->pb->buf)) {
 					current = json_object_new_int64(num64);
 
 				} else if (tok->flags & JSON_TOKENER_BIGINT_AS_STRING) {
@@ -828,8 +851,20 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
   return NULL;
 }
 
-void json_tokener_set_flags(struct json_tokener *tok, int flags, int intmaxlen)
+void json_tokener_set_flags(struct json_tokener *tok, int flags)
 {
 	tok->flags     = flags;
-	tok->intmaxlen = intmaxlen;
 }
+
+void json_tokener_set_bigint(struct json_tokener *tok, int intmaxlen, const char *digits)
+{
+	/* in zend.h
+	 *    #define MAX_LENGTH_OF_LONG 11
+	 *    long_min_digits[] = "2147483648"
+	 * or #define MAX_LENGTH_OF_LONG 20
+	 *    long_min_digits[] = "9223372036854775808"
+	 */
+	tok->intmaxlen = intmaxlen-1; /* length without the sign (*/
+	tok->digits    = digits;
+}
+
