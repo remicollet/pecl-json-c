@@ -14,16 +14,13 @@ See [PHP bug #63520](https://bugs.php.net/63520)
 json_encode is the same than current PHP one.
 
 json_decode use the json-c library and is mostly compatible.
-- > 64 bits integer are always parsed as integer (never float or string)
-- 33 to 64 bits bits integer are parsed as float (or string) on 32 bits build
-- [doesn't drop](https://github.com/remicollet/pecl-json-c/issues/9) invalid UTF-8
-
 
 A new option JSON_PARSER_NOTSTRICT allow to reduce parser strictness
 - integer could start with zero
 - string can be single or double-quoted
 - comments are allowed in json string/files (Using /* */ or // until end of line)
 - ignore trailing char after data
+- no check for invalid UTF-8 characters
 
 Also provide a new incremental parser object:
 
@@ -40,13 +37,13 @@ or, even simpler:
 	$ret = $parser->parseFile("somefile.json");
 	$result = $parser->get();
 
-Debian DEB available in Jessie for PHP 5.5
+Debian DEB available, since Jessie for PHP 5.5
 - http://packages.debian.org/jessie/php5-json
 
-Fedora 19 RPM are available in official repo
+Fedora RPM are available in official repo, since Fedora 19
 - https://apps.fedoraproject.org/packages/php-pecl-jsonc
 
-Ubuntu DEB available in Saucy for PHP 5.5
+Ubuntu DEB available, since Saucy for PHP 5.5
 - http://packages.ubuntu.com/saucy/php5-json
 
 Fedora RPM are available in remi repo
