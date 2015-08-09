@@ -142,7 +142,7 @@ extern struct json_object* json_tokener_parse_verbose(const char *str, enum json
  * Set flags that control how parsing will be done.
  */
 extern void json_tokener_set_flags(struct json_tokener *tok, int flags);
-extern void json_tokener_set_bigint(struct json_tokener *tok, int intmaxlen, const char *digits);
+extern void json_tokener_set_bigint(struct json_tokener *tok, const char *digits);
 
 /** 
  * Parse a string and return a non-NULL json_object if a valid JSON value

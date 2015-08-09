@@ -856,7 +856,7 @@ void json_tokener_set_flags(struct json_tokener *tok, int flags)
 	tok->flags     = flags;
 }
 
-void json_tokener_set_bigint(struct json_tokener *tok, int intmaxlen, const char *digits)
+void json_tokener_set_bigint(struct json_tokener *tok, const char *digits)
 {
 	/* in zend.h
 	 *    #define MAX_LENGTH_OF_LONG 11
@@ -864,7 +864,7 @@ void json_tokener_set_bigint(struct json_tokener *tok, int intmaxlen, const char
 	 * or #define MAX_LENGTH_OF_LONG 20
 	 *    long_min_digits[] = "9223372036854775808"
 	 */
-	tok->intmaxlen = intmaxlen-1; /* length without the sign (*/
+	tok->intmaxlen = strlen(digits); /* length without the sign (*/
 	tok->digits    = digits;
 }
 
