@@ -1,6 +1,9 @@
 pecl-json-c
 ===========
 
+[![Build Status](https://travis-ci.org/remicollet/pecl-json-c.svg?branch=master)](https://travis-ci.org/remicollet/pecl-json-c)
+
+
 JSON-C wrapper
 
 This is the sources repository for http://pecl.php.net/package/jsonc
