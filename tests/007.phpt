@@ -1,7 +1,10 @@
 --TEST--
 json_last_error() tests
 --SKIPIF--
-<?php if (!extension_loaded("json")) print "skip"; ?>
+<?php
+if (!extension_loaded("json")) die("skip");
+if (version_compare('5.5.0', PHP_VERSION, '>')) die("skip with PHP 5.4");
+?>
 --XFAIL--
 Different parser, so different error codes.
 --FILE--
