@@ -25,7 +25,7 @@ foreach ($env as $e) {
 
 before_script:
  - make -f travis/pecl/Makefile php
- - make -f travis/pecl/Makefile ext PECL=json-c
+ - make -f travis/pecl/Makefile ext PECL=json-c:json
 
 script:
  - make -f travis/pecl/Makefile test
