@@ -833,12 +833,7 @@ static void json_object_to_zval(json_object  *new_obj, zval *return_value, int o
 					const char *str = json_object_get_string(new_obj);
 					int         len = json_object_get_string_len(new_obj);
 
-					if (!(options & PHP_JSON_PARSER_NOTSTRICT) &&
-						json_utf8_to_utf16(NULL, str, len) < 0) {
-						JSON_G(error_code) = PHP_JSON_ERROR_UTF8;
-					} else {
-						RETVAL_STRINGL(str, len, 1);
-					}
+					RETVAL_STRINGL(str, len, 1);
 				}
 				break;
 
@@ -928,6 +923,11 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 		RETURN_NULL();
 	}
 
+	/* check UTF8 globally on input string, before parsing */
+	if (!(options & PHP_JSON_PARSER_NOTSTRICT) && json_utf8_to_utf16(NULL, str, str_len) < 0) {
+		JSON_G(error_code) = PHP_JSON_ERROR_UTF8;
+		RETURN_NULL();
+	}
 	JSON_G(error_code) = 0;
 	RETVAL_NULL();
 
@@ -952,10 +952,6 @@ PHP_JSON_API void php_json_decode_ex(zval *return_value, char *str, int str_len,
 	if (new_obj) {
 		json_object_to_zval(new_obj, return_value, options TSRMLS_CC);
 		json_object_put(new_obj);
-		if (JSON_G(error_code)) { // UTF8 error during conversion to zval
-			zval_ptr_dtor(&return_value);
-			RETVAL_NULL();
-		}
 	} else {
 		switch (json_tokener_get_error(tok)) {
 			case json_tokener_success:

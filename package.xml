@@ -16,10 +16,10 @@ This is a drop-in alternative to PHP standard json extension.
   <email>remi@php.net</email>
   <active>yes</active>
  </lead>
- <date>2015-09-07</date>
- <time>07:28:00</time>
+ <date>2015-09-15</date>
+ <time>13:00:00</time>
  <version>
-  <release>1.3.8</release>
+  <release>1.3.9</release>
   <api>1.3.0</api>
  </version>
  <stability>
@@ -28,11 +28,7 @@ This is a drop-in alternative to PHP standard json extension.
  </stability>
  <license>PHP 3.01</license>
  <notes>
-- using system libjson-c is no more supported
-- fix BIGINT behavior
-- fix #12 allow float starting with a dot
-- fix #23 single quote in property name
-- fix #9  invalid UTF-8 characters
+- fix #70499 segfault after json_decode
  </notes>
  <contents>
   <dir name="/">
@@ -110,6 +106,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="bug61978.phpt" role="test" />
     <file name="bug62369.phpt" role="test" />
     <file name="bug66021.phpt" role="test" />
+    <file name="bug70499.phpt" role="test" />
     <file name="issue9.phpt" role="test" />
     <file name="issue12.phpt" role="test" />
     <file name="issue23.phpt" role="test" />
@@ -479,6 +476,25 @@ Version 1.3.0 is Major rewrite which use the use json-c library 0.11:
    <notes>
 - apply fix for #50224 where float without decimals were converted to
   integer by adding JSON_PRESERVE_ZERO_FRACTION. (Juan Basso)
+   </notes>
+  </release>
+  <release>
+   <date>2015-09-07</date>
+   <version>
+    <release>1.3.8</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license>PHP 3.01</license>
+   <notes>
+- using system libjson-c is no more supported
+- fix BIGINT behavior
+- fix #12 allow float starting with a dot
+- fix #23 single quote in property name
+- fix #9  invalid UTF-8 characters
    </notes>
   </release>
  </changelog>
