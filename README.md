@@ -9,10 +9,13 @@ JSON-C wrapper
 This is the sources repository for http://pecl.php.net/package/jsonc
 
 This extension  was created to be a drop-in alternative to the standard
-PHP json extension, because of the licensing concerns over the JSON parser
+**PHP 5** json extension, because of the licensing concerns over the JSON parser
 code used as part of the standard PHP json extension.
 See [PHP bug #63520](https://bugs.php.net/63520)
 
+As **PHP 7** have a new ext/json extension, which is free,
+this extension will not be made comptible, and won't be
+available for PHP 7.
 
 json_encode is the same than current PHP one.
 
