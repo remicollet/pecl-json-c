@@ -497,5 +497,20 @@ Version 1.3.0 is Major rewrite which use the use json-c library 0.11:
 - fix #9  invalid UTF-8 characters
    </notes>
   </release>
+  <release>
+   <date>2015-09-15</date>
+   <version>
+    <release>1.3.9</release>
+    <api>1.3.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license>PHP 3.01</license>
+   <notes>
+- fix #70499 segfault after json_decode
+   </notes>
+  </release>
  </changelog>
 </package>
