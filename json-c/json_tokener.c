@@ -638,8 +638,21 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
 
 			while(c && strchr(json_number_chars, c)) {
 				++case_len;
-				if(c == '.' || c == 'e' || c == 'E')
-					tok->is_double = 1;
+				if(c == '.') {
+					if (tok->is_double > 1) {
+						/* double dot, or dot after 'e' */
+						tok->err = json_tokener_error_parse_number;
+						goto out;
+					}
+					tok->is_double = 2;
+				} else if (c == 'e' || c == 'E') {
+					if (tok->is_double > 2) {
+						/* double 'e' */
+						tok->err = json_tokener_error_parse_number;
+						goto out;
+					}
+					tok->is_double = 3;
+				}
 				if (!ADVANCE_CHAR(str, tok) || !PEEK_CHAR(c, tok)) {
 					printbuf_memappend_fast(tok->pb, case_start, case_len);
 					goto out;
