@@ -115,7 +115,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="inf_nan_error.phpt" role="test" />
     <file name="json_decode_basic.phpt" role="test" />
     <file name="json_decode_error.phpt" role="test" />
-    <file name="tests/json_decode_float.phpt" role="test" />
+    <file name="json_decode_float.phpt" role="test" />
     <file name="json_encode_basic.phpt" role="test" />
     <file name="json_encode_basic_utf8.phpt" role="test" />
     <file name="json_encode_error.phpt" role="test" />
