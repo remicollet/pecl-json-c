@@ -29,6 +29,7 @@ This is a drop-in alternative to PHP standard json extension.
  <license>PHP 3.01</license>
  <notes>
 - fix gh#27 invalid string to float convertion
+- fix gh#28 fix result when we decode number with "-" in bad position
  </notes>
  <contents>
   <dir name="/">
@@ -110,6 +111,7 @@ This is a drop-in alternative to PHP standard json extension.
     <file name="issue9.phpt" role="test" />
     <file name="issue12.phpt" role="test" />
     <file name="issue23.phpt" role="test" />
+    <file name="issue28.phpt" role="test" />
     <file name="depth.phpt" role="test" />
     <file name="fail001.phpt" role="test" />
     <file name="inf_nan_error.phpt" role="test" />

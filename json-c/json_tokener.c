@@ -635,9 +635,17 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
 			/* Advance until we change state */
 			const char *case_start = str;
 			int case_len=0;
+			int allowneg=1;
 
 			while(c && strchr(json_number_chars, c)) {
 				++case_len;
+				if (c == '-') {
+					if (!allowneg) {
+						tok->err = json_tokener_error_parse_number;
+						goto out;
+					}
+				}
+				allowneg = 0;
 				if(c == '.') {
 					if (tok->is_double > 1) {
 						/* double dot, or dot after 'e' */
@@ -651,6 +659,7 @@ struct json_object* json_tokener_parse_ex(struct json_tokener *tok,
 						tok->err = json_tokener_error_parse_number;
 						goto out;
 					}
+					allowneg = 1;
 					tok->is_double = 3;
 				}
 				if (!ADVANCE_CHAR(str, tok) || !PEEK_CHAR(c, tok)) {
